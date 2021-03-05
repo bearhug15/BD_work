@@ -1,5 +1,5 @@
 [package]
-name = "untitled"
+name = "BD_server"
 version = "0.1.0"
 authors = ["bearhug15 <iartem2000@gmail.com>"]
 edition = "2018"
