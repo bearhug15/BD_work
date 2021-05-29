@@ -178,10 +178,10 @@ fn handle_client(mut stream: &TcpStream,tables: Arc<RwLock<HashMap<String,Mutex<
         match get_data(&mut stream){
             Ok(data) => {
             let req:Value = serde_json::from_str(&data).unwrap();
-
-
-
-
+            let res = process_input(&connection,req,&tables);
+            match send_data(&mut stream, serde_json::to_string(&res).unwrap()){
+                Ok(_)=>{}
+                Err(_)=>{println!("Send error"):break;}
             }
             Err(_) => {println!("Connection error");break;}
         }
