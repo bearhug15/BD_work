@@ -15,7 +15,10 @@ import java.awt.event.KeyEvent;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Collection;
 import java.util.Vector;
+
+import static java.lang.Math.max;
 
 
 public class DataGetterGenerator {
@@ -219,7 +222,11 @@ public class DataGetterGenerator {
             JTextField eqListField = new JTextField(String.valueOf(eqListId));
             eqListField.setEditable(false);
             messages.add(eqListField);
-            listModel.addAll(eqIds);
+            eqIds.forEach(id->{
+                listModel.addElement(id);
+            });//*/
+            //listModel.addAll((Collection<String>) eqIds);
+            //listModel.addAll(eqIds);
         }
 
         JScrollPane scrollList = new JScrollPane(eqList);
@@ -230,7 +237,7 @@ public class DataGetterGenerator {
                 int l = value.length();
                 if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') {
                 } else {
-                    number.setText(value.substring(0, l - 1));
+                    number.setText(value.substring(0, max(l - 1,0)));
                 }
             }
         });
@@ -372,7 +379,7 @@ public class DataGetterGenerator {
         return entity;
     }
 
-    public static Entity createDepartmentHead(Component component, JSONConnection connection, Vector<Object> lastArgs) {
+    public static Entity createDepartmentHeadDataGetter(Component component, JSONConnection connection, Vector<Object> lastArgs) {
         isGettingDepartmentHead=true;
         Entity entity = new Entity();
         String department_name ="";
@@ -382,6 +389,8 @@ public class DataGetterGenerator {
             department_name = (String) lastArgs.elementAt(0);
             workerId = (int) lastArgs.elementAt(1);
         }
+        JLabel workerIdLabel = new JLabel("Worker id");
+        messages.add(workerIdLabel);
         JTextField workerIdField = new JTextField(String.valueOf(workerId));
         workerIdField.addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent ke) {
@@ -389,7 +398,7 @@ public class DataGetterGenerator {
                 int l = value.length();
                 if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') {
                 } else {
-                    workerIdField.setText(value.substring(0, l - 1));
+                    workerIdField.setText(value.substring(0, max(l - 1,0)));
                 }
             }
         });
@@ -415,6 +424,15 @@ public class DataGetterGenerator {
 
         int res = JOptionPane.showOptionDialog(component, messages.toArray(), "Set department head", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
         if (res == JOptionPane.OK_OPTION) {
+            try {
+                if (Integer.parseInt(workerIdField.toString()) < 1) {
+                    JOptionPane.showMessageDialog(component, "Worker id should be greater then 0", "Input error", JOptionPane.ERROR_MESSAGE);
+                    return null;
+                }
+            }catch (NumberFormatException e){
+                JOptionPane.showMessageDialog(component, "Wrong worker id", "Input error", JOptionPane.ERROR_MESSAGE);
+                return null;
+            }
             Vector<MyEntry<String, String>> newArgs = new Vector<>();
             newArgs.add(new MyEntry<>("worker_id", workerIdField.toString()));
             String JSONString;
@@ -484,7 +502,7 @@ public class DataGetterGenerator {
                 int l = value.length();
                 if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') {
                 } else {
-                    costField.setText(value.substring(0, l - 1));
+                    costField.setText(value.substring(0,max(l - 1,0)));
                 }
             }
         });
@@ -621,7 +639,7 @@ public class DataGetterGenerator {
                 int l = value.length();
                 if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') {
                 } else {
-                    costField.setText(value.substring(0, l - 1));
+                    costField.setText(value.substring(0, max(l - 1,0)));
                 }
             }
         });
@@ -668,7 +686,7 @@ public class DataGetterGenerator {
             messages.add("Set new project cost");
         }
         messages.add(costField);
-        if(lastArgs!=null) {
+        /*if(lastArgs!=null) {
             messages.add("Set project start date");
         }else{
             messages.add("Set new project start date");
@@ -680,7 +698,7 @@ public class DataGetterGenerator {
             messages.add("Set new project end date");
         }
         messages.add(endDatePicker);
-        messages.add(warningLabel);
+        messages.add(warningLabel);*/
         int res = JOptionPane.showOptionDialog(component,messages.toArray(),"Set project",JOptionPane.OK_CANCEL_OPTION,JOptionPane.PLAIN_MESSAGE,null,null,null);
         if (res==JOptionPane.OK_OPTION){
             LocalDate startDate = startDatePicker.getDate();
@@ -801,7 +819,10 @@ public class DataGetterGenerator {
             JTextField eqListField = new JTextField(String.valueOf(groupId));
             eqListField.setEditable(false);
             messages.add(eqListField);
-            listModel.addAll(workerIds);
+            workerIds.forEach(id->{
+                listModel.addElement(id);
+            });
+            //listModel.addAll(workerIds);
         }else{
             group_type="";
         }
@@ -814,7 +835,7 @@ public class DataGetterGenerator {
                 int l = value.length();
                 if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') {
                 } else {
-                    number.setText(value.substring(0, l - 1));
+                    number.setText(value.substring(0, max(l - 1,0)));
                 }
             }
         });
@@ -846,7 +867,7 @@ public class DataGetterGenerator {
                 int l = value.length();
                 if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') {
                 } else {
-                    costField.setText(value.substring(0, l - 1));
+                    costField.setText(value.substring(0,max(l - 1,0)));
                 }
             }
         });
@@ -1110,6 +1131,7 @@ public class DataGetterGenerator {
         isGettingGroupType = false;
         return entity;
     }
+    //todo
     public static Entity createProjectContractBinderDataGetter(Component component, JSONConnection connection, Vector<Object> lastArgs){
 
         return null;
@@ -1161,4 +1183,5 @@ public class DataGetterGenerator {
         isGettingCompany = false;
         return entity;
     }
+    //todo forms
 }

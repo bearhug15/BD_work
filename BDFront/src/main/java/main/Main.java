@@ -44,9 +44,15 @@ public class Main extends JFrame {
         } /*catch (IOException e) {
             System.out.println("Exception at getting init");
         }*/
+        JMenuBar forms = new JMenuBar();
+        JMenu formMenu =new JMenu("Forms");
+        setForms(formMenu);
+        forms.add(formMenu);
 
         JTabbedPane tables = new JTabbedPane(JTabbedPane.NORTH);
         fillTabbedPane(tables,initData, JSONConnection);
+
+        add(forms,BorderLayout.NORTH);
         add(tables,BorderLayout.CENTER);
 
         pack();
@@ -55,7 +61,7 @@ public class Main extends JFrame {
         //DataGetterGenerator.createEquipmentGroupDataGetter(Main.super.rootPane,connection,null);
         //DataGetterGenerator.createGroupDataGetter(Main.super.rootPane,connection,null);
         //DataGetterGenerator.createEquipmentDataGetter(Main.super.rootPane,connection,null);
-        DataGetterGenerator.createGroupDataGetter(Main.super.rootPane,connection,null);
+        //DataGetterGenerator.createGroupDataGetter(Main.super.rootPane,connection,null);
         //*/
     }
     public void addTabsFromDB(){
@@ -99,14 +105,24 @@ public class Main extends JFrame {
     }
 
     private void fillTabbedPane(JTabbedPane tabbedPane, InitData initData, JSONConnection JSONConnection){
-        initData.getTables().forEach(table->{
-            tabbedPane.addTab(table.getName(),createTablePanel(table, JSONConnection));
-        });
+        tabbedPane.add("Companies",createTablePanel("Company",JSONConnection));
+        tabbedPane.add("Worker types",createTablePanel("WorkerType",JSONConnection));
+        tabbedPane.add("Equipment types",createTablePanel("EquipmentType",JSONConnection));
+        tabbedPane.add("Group types",createTablePanel("GroupType",JSONConnection));
+        tabbedPane.add("Departments",createTablePanel("Department",JSONConnection));
+        tabbedPane.add("Workers",createTablePanel("Worker",JSONConnection));
+        tabbedPane.add("Equipment",createTablePanel("Equipment",JSONConnection));
+        tabbedPane.add("Equipment groups",createTablePanel("EquipmentGroup",JSONConnection));
+        tabbedPane.add("Department heads",createTablePanel("DepartmentHead",JSONConnection));
+        tabbedPane.add("Contracts",createTablePanel("Contract",JSONConnection));
+        tabbedPane.add("Projects",createTablePanel("Project",JSONConnection));
+        tabbedPane.add("Groups",createTablePanel("Group",JSONConnection));
+        tabbedPane.add("Contracts&Projects",createTablePanel("ProjectContractBinder",JSONConnection));
     }
-    private JPanel createTablePanel(Table table, JSONConnection JSONConnection){
+    private JPanel createTablePanel(String tableName, JSONConnection JSONConnection){
         JPanel mainPanel = new JPanel();
 
-        TablePanel tablePanel = new TablePanel(table, JSONConnection);
+        TablePanel tablePanel = new TablePanel(tableName,JSONConnection);
         JMenuBar tableBar = new JMenuBar();
         JMenuItem refreshButton = new JMenuItem("Refresh table");
 
@@ -116,7 +132,13 @@ public class Main extends JFrame {
             this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         });
 
+        JMenuItem createButton = new JMenuItem("Create entry");
+        createButton.addActionListener(action->{
+            tablePanel.createTableEntry();
+        });
+
         tableBar.add(refreshButton);
+        tableBar.add(createButton);
         mainPanel.add(tableBar,BorderLayout.NORTH);
         mainPanel.add(tablePanel,BorderLayout.CENTER);
 
@@ -146,5 +168,17 @@ public class Main extends JFrame {
                     "]" +
                 " }");
         return stringJSONBuild.toString();
+    }
+    private void setForms(JMenu menu){
+        JMenuItem contractsByTimeItem = new JMenuItem("Get contracts by time");
+        JMenuItem contractsByProjectItem = new JMenuItem("Get contracts by project id");
+        JMenuItem contractsEfItem = new JMenuItem("Get contracts efficiency");
+        JMenuItem contractsCostByTimeItem = new JMenuItem("Get contracts cost by time");
+
+
+        menu.add(contractsByTimeItem);
+        menu.add(contractsByProjectItem);
+        menu.add(contractsEfItem);
+        menu.add(contractsCostByTimeItem);
     }
 }
