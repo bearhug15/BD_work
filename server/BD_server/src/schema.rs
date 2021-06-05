@@ -94,6 +94,7 @@ table! {
     project (project_id) {
         project_id -> Int4,
         cost -> Nullable<Int8>,
+        data -> Nullable<Json>,
     }
 }
 

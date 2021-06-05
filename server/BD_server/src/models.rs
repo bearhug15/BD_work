@@ -26,6 +26,8 @@ use super::schema::company;
 
 
 use chrono::NaiveDateTime;
+use diesel::PgConnection;
+use serde_json::Value;
 
 #[derive(Queryable, Debug, Identifiable,Deserialize, Serialize)]
 #[primary_key(company_name)]
@@ -90,7 +92,7 @@ pub struct EqGroupList {
     pub eq_list_id: i32,
 }
 
-#[derive(Queryable, Debug, Identifiable, Associations,Deserialize, Serialize)]
+#[derive(Queryable, Debug, Identifiable, Associations,Deserialize, Serialize,QueryableByName)]
 #[belongs_to(EquipmentType, foreign_key = "type_")]
 #[belongs_to(Department, foreign_key = "department_name")]
 #[primary_key(eq_id)]
@@ -155,9 +157,10 @@ pub struct MechAttr {
 pub struct Project {
     pub project_id: i32,
     pub cost: Option<i64>,
+    pub data: Option<Value>
 }
 
-#[derive(Queryable, Debug, Identifiable, Associations,Deserialize, Serialize)]
+#[derive(Queryable, Debug, Identifiable, Associations,Deserialize, Serialize,QueryableByName)]
 #[belongs_to(Department, foreign_key = "department_name")]
 #[belongs_to(WorkerTypes, foreign_key = "worker_type")]
 #[primary_key(worker_id)]
@@ -234,4 +237,5 @@ pub struct PcBind {
     pub project_end: NaiveDateTime,
     pub eq_list_id: i32,
 }
+
 

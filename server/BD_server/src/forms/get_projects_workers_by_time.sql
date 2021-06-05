@@ -1,4 +1,4 @@
-SELECT worker.worker_id, firstname, secondname, familyname, age
+SELECT DISTINCT worker.*
 	FROM
 	(SELECT contract_id, project_id, group_id
 	FROM pc_bind
@@ -6,5 +6,5 @@ SELECT worker.worker_id, firstname, secondname, familyname, age
 	) AS in_time
 	JOIN groups
 	ON groups.group_id = in_time.group_id
-	JOIN workers
+	JOIN worker
 	ON groups.worker_id = worker.worker_id
