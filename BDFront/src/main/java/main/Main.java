@@ -41,7 +41,7 @@ public class Main extends JFrame {
             //initData = createInitData(JSONInitString);//*/
             //initData = createInitData(initCheck());
         }catch (CancelledConnectionCreation e){
-            //System.exit(1);
+            System.exit(1);
         }catch (IOException e) {
             System.out.println("Exception at getting init");
         }
@@ -158,11 +158,35 @@ public class Main extends JFrame {
         contractsCostByTimeItem.addActionListener(action->{
             DataGetterGenerator.ContractsCostByTimeForm(Main.super.rootPane,connection);
         });
-
+        JMenuItem departmentHeadsItem = new JMenuItem("Get department heads");
+        contractsCostByTimeItem.addActionListener(action->{
+            DataGetterGenerator.DepartmentHeadsForm(Main.super.rootPane,connection);
+        });
+        JMenuItem departmentStuffByAgeItem = new JMenuItem("Get department stuff by age");
+        contractsCostByTimeItem.addActionListener(action->{
+            DataGetterGenerator.DepartmentStuffByAgeForm(Main.super.rootPane,connection);
+        });
+        JMenuItem departmentStuffByTypeItem = new JMenuItem("Get department stuff by type");
+        contractsCostByTimeItem.addActionListener(action->{
+            DataGetterGenerator.DepartmentStuffByTypeForm(Main.super.rootPane,connection);
+        });
+        JMenuItem EquipmentByContractItem = new JMenuItem("Get equipment by contract");
+        contractsCostByTimeItem.addActionListener(action->{
+            DataGetterGenerator.EquipmentByContractForm(Main.super.rootPane,connection);
+        });
+        JMenuItem EquipmentByProjectItem = new JMenuItem("Get equipment by project");
+        contractsCostByTimeItem.addActionListener(action->{
+            DataGetterGenerator.EquipmentByProjectForm(Main.super.rootPane,connection);
+        });
         menu.add(AVGSalaryByWorkerTypeItem);
         menu.add(contractsAtTimeItem);
         menu.add(contractsByProjectItem);
         menu.add(contractsEfItem);
         menu.add(contractsCostByTimeItem);
+        menu.add(departmentHeadsItem);
+        menu.add(departmentStuffByAgeItem);
+        menu.add(departmentStuffByTypeItem);
+        menu.add(EquipmentByContractItem);
+        menu.add(EquipmentByProjectItem);
     }
 }
