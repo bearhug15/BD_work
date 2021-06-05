@@ -7,25 +7,42 @@ import main.JSONConnection;
 import utils.Table;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Vector;
 
 public class TablePanel extends JPanel {
     JTable table;
     String tableName;
     main.JSONConnection JSONConnection;
     int tablePart =0;
-    LinkedList<JPanel> entries = new LinkedList<>();
-    public TablePanel(String tableName,JSONConnection JSONConnection){
+    Vector<String> columnNames;
+    String sortField;
+    String order;
+    HashMap<Long,LinkedList<LinkedList<Object>>> rows = new HashMap<>();
+    public TablePanel(String tableName, JSONConnection JSONConnection, Vector<String> columnNames){
         this.tableName =tableName;
         this.JSONConnection = JSONConnection;
+        this.columnNames =columnNames;
+        DefaultTableModel tableModel = new DefaultTableModel(columnNames,10);
+        table = new JTable(tableModel);
+        sortField = columnNames.elementAt(0);
+        order="ASC";
     }
     public void getNewTableData(){
         tablePart=0;
-        String JSONString = StringJSONMessageGenerator.getTablePartMsg(tableName,0);
+        String JSONString = StringJSONMessageGenerator.getTablePartMsg(tableName,sortField,order,0);
         String result = JSONConnection.makeRequest(JSONString);
+
         //todo
+    }
+    public void getTablePartData(long part){
+        String JSONString = StringJSONMessageGenerator.getTablePartMsg(tableName,sortField,order,0);
+        String result = JSONConnection.makeRequest(JSONString);
     }
     public void createTableEntry(){
         Class c= DataGetterGenerator.class;
@@ -47,4 +64,6 @@ public class TablePanel extends JPanel {
             }
         }
     }
+
+
 }

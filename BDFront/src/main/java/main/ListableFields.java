@@ -53,12 +53,12 @@ public class ListableFields {
     }
 
     static {
-        groupTypes.add("default group");
+        /*groupTypes.add("default group");
         groupTypes.add("company");
         //departmentNames.add("First department");
         //departmentNames.add("Second department");
         companies.add("First company");
-        companies.add("Second company");
+        companies.add("Second company");*/
 
     }
 }

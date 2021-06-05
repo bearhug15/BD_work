@@ -13,15 +13,15 @@ public class StringJSONMessageGenerator {
         stringJSON = "{ \"messageType\" : \"fullDataAsk\", \"tableName\" : \""+ tableName + "\"  }";
         return stringJSON;
     }
-    public static String getTablePartMsg(String tableName, long partNumber){
+    public static String getTablePartMsg(String tableName, String fieldName, String order, long partNumber){
         String stringJSON=null;
-        stringJSON = "{ \"messageType\" : \"partDataAsk\", \"tableName\" : \""+ tableName + "\", \"partNumber\" : \""+String.valueOf(partNumber)+"\"}";
+        stringJSON = "{ \"messageType\" : \"partDataAsk\", \"tableName\" : \""+ tableName + "\", \"fieldName\" : \""+ fieldName + "\", \"order\": \""+order+"\", \"partNumber\" : \""+String.valueOf(partNumber)+"\"}";
         return stringJSON;
     }
     public static String updateTableMsg(String tableName, String key, Vector<MyEntry<String,String>> args){
         StringBuilder stringJSONBuild = new StringBuilder();
         stringJSONBuild.append("{ \"messageType\" : \"updateTable\", \"tableName\" : \""+ tableName + "\", \"key\" : \""+key+"\"");
-        stringJSONBuild.append(", values: {");
+        stringJSONBuild.append(", \"values\": {");
         args.forEach(entry->{
             stringJSONBuild.append(" \""+entry.getKey()+"\" : \"" + entry.getValue()+"\",");
         });
@@ -40,7 +40,7 @@ public class StringJSONMessageGenerator {
         stringJSONBuild.append(keyName);
         stringJSONBuild.append("\", \"key\" : \"");
         stringJSONBuild.append(key);
-        stringJSONBuild.append("\", values: {");
+        stringJSONBuild.append("\", \"values\": {");
         args.forEach(field->{
             stringJSONBuild.append("\"" +field.getKey());
             stringJSONBuild.append("\": [");
@@ -63,7 +63,7 @@ public class StringJSONMessageGenerator {
         StringBuilder stringJSONBuild = new StringBuilder();
         stringJSONBuild.append("{ \"messageType\" : \"addEntry\", \"tableName\" : \""+ tableName + "\"");
         if(args!=null) {
-            stringJSONBuild.append(", values: {");
+            stringJSONBuild.append(", \"values\": {");
             args.forEach(entry -> {
                 stringJSONBuild.append(" \"" + entry.getKey() + "\" : \"" + entry.getValue() + "\",");
             });
@@ -103,160 +103,170 @@ public class StringJSONMessageGenerator {
         stringJSONBuild.append("{ \"messageType\" : \"deleteEntry\", \"tableName\" : \""+ tableName + "\", \"keyName\" : \""+keyName+"\", \"key\" : \""+key+"\"");
         return stringJSONBuild.toString();
     }
+    public static String getAVGSalaryByWorkerTypeForm(){
+        StringBuilder stringJSONBuild = new StringBuilder();
+        stringJSONBuild.append("{ \"messageType\" : \"form\" , \"type\" : \"AVGSalaryByWorkerType\", \"value\" : {\"value\":\"nothihng\"} }");
+        return stringJSONBuild.toString();
+    }
     public static String getContractsAtTimeForm(String timeStart, String timeEnd){
         StringBuilder stringJSONBuild = new StringBuilder();
-        stringJSONBuild.append("{ \"messageType\" : \"form\" , \"type\" : \"contractsAtTime\", \"timeStart\" : \"");
+        stringJSONBuild.append("{ \"messageType\" : \"form\" , \"type\" : \"contractsAtTime\", \"value\" : { \"timeStart\" : \"");
         stringJSONBuild.append(timeStart);
         stringJSONBuild.append("\" , \"timeEnd\" : \"");
         stringJSONBuild.append(timeEnd);
-        stringJSONBuild.append("\" }");
+        stringJSONBuild.append("\" }}");
         return stringJSONBuild.toString();
     }
     public static String getContractsByProjectForm(String projectId){
         StringBuilder stringJSONBuild = new StringBuilder();
-        stringJSONBuild.append("{ \"messageType\" : \"form\" , \"type\" : \"contractsByProject\", \"projectId\" : \"");
+        stringJSONBuild.append("{ \"messageType\" : \"form\" , \"type\" : \"contractsByProject\",\"value\" : {  \"projectId\" : \"");
         stringJSONBuild.append(projectId);
-        stringJSONBuild.append("\" }");
+        stringJSONBuild.append("\" }}");
         return stringJSONBuild.toString();
     }
     public static String getContractsCostByTimeForm(String timeStart, String timeEnd){
         StringBuilder stringJSONBuild = new StringBuilder();
-        stringJSONBuild.append("{ \"messageType\" : \"form\" , \"type\" : \"contractsCostByTime\", \"timeStart\" : \"");
+        stringJSONBuild.append("{ \"messageType\" : \"form\" , \"type\" : \"contractsCostByTime\", \"value\" : { \"timeStart\" : \"");
         stringJSONBuild.append(timeStart);
         stringJSONBuild.append("\" , \"timeEnd\" : \"");
         stringJSONBuild.append(timeEnd);
-        stringJSONBuild.append("\" }");
+        stringJSONBuild.append("\" }}");
         return stringJSONBuild.toString();
     }
     public static String getContractsEfForm(){
         StringBuilder stringJSONBuild = new StringBuilder();
-        stringJSONBuild.append("{ \"messageType\" : \"form\" , \"type\" : \"contractsEf\" }");
+        stringJSONBuild.append("{ \"messageType\" : \"form\" , \"type\" : \"contractsEf\", \"value\" : { \"value\":\"nothing\"} }");
         return stringJSONBuild.toString();
     }
     public static String getDepartmentHeadsForm(){
         StringBuilder stringJSONBuild = new StringBuilder();
-        stringJSONBuild.append("{ \"messageType\" : \"form\" , \"type\" : \"departmentHeads\" }");
+        stringJSONBuild.append("{ \"messageType\" : \"form\" , \"type\" : \"departmentHeads\", \"value\" : {} }");
         return stringJSONBuild.toString();
     }
     public static String getDepartmentStuffByAgeForm(String departmentName, String ageStart,String ageEnd){
         StringBuilder stringJSONBuild = new StringBuilder();
-        stringJSONBuild.append("{ \"messageType\" : \"form\" , \"type\" : \"departmentStuffByAge\", \"departmentName\" :  \"");
+        stringJSONBuild.append("{ \"messageType\" : \"form\" , \"type\" : \"departmentStuffByAge\",  \"value\" : {\"departmentName\" :  \"");
         stringJSONBuild.append(departmentName);
         stringJSONBuild.append("\" , \"ageStart\" : \"");
         stringJSONBuild.append(ageStart);
         stringJSONBuild.append("\", \"ageEnd\" : \"");
         stringJSONBuild.append(ageEnd);
-        stringJSONBuild.append("\" }");
+        stringJSONBuild.append("\" }}");
         return stringJSONBuild.toString();
     }
     public static String getDepartmentStuffByTypeForm(String departmentName, String workerType){
         StringBuilder stringJSONBuild = new StringBuilder();
-        stringJSONBuild.append("{ \"messageType\" : \"form\" , \"type\" : \"departmentStuffByType\", \"departmentName\" :  \"");
+        stringJSONBuild.append("{ \"messageType\" : \"form\" , \"type\" : \"departmentStuffByType\", \"value\" : { \"departmentName\" :  \"");
         stringJSONBuild.append(departmentName);
         stringJSONBuild.append("\" , \"workerType\" : \"");
         stringJSONBuild.append(workerType);
-        stringJSONBuild.append("\" }");
+        stringJSONBuild.append("\" }}");
         return stringJSONBuild.toString();
     }
     public static String getEquipmentByContractForm(String contractId){
         StringBuilder stringJSONBuild = new StringBuilder();
-        stringJSONBuild.append("{ \"messageType\" : \"form\" , \"type\" : \"equipmentByContract\", \"contractId\" :  \"");
+        stringJSONBuild.append("{ \"messageType\" : \"form\" , \"type\" : \"equipmentByContract\", \"value\" : { \"contractId\" :  \"");
         stringJSONBuild.append(contractId);
-        stringJSONBuild.append("\" }");
+        stringJSONBuild.append("\" }}");
         return stringJSONBuild.toString();
     }
     public static String getEquipmentByProjectForm(String projectId){
         StringBuilder stringJSONBuild = new StringBuilder();
-        stringJSONBuild.append("{ \"messageType\" : \"form\" , \"type\" : \"equipmentByProject\", \"projectId\" :  \"");
+        stringJSONBuild.append("{ \"messageType\" : \"form\" , \"type\" : \"equipmentByProject\",  \"value\" : {\"projectId\" :  \"");
         stringJSONBuild.append(projectId);
-        stringJSONBuild.append("\" }");
+        stringJSONBuild.append("\" }}");
         return stringJSONBuild.toString();
     }
     public static String getEquipmentPlaceByTimeForm(String time){
         StringBuilder stringJSONBuild = new StringBuilder();
-        stringJSONBuild.append("{ \"messageType\" : \"form\" , \"type\" : \"equipmentPlaceByTime\", \"time\" :  \"");
+        stringJSONBuild.append("{ \"messageType\" : \"form\" , \"type\" : \"equipmentPlaceByTime\",  \"value\" : {\"time\" :  \"");
         stringJSONBuild.append(time);
-        stringJSONBuild.append("\" }");
+        stringJSONBuild.append("\" }}");
+        return stringJSONBuild.toString();
+    }
+    public static String getFullContractDataForm(){
+        StringBuilder stringJSONBuild = new StringBuilder();
+        stringJSONBuild.append("{ \"messageType\" : \"form\" , \"type\" : \"fullContractData\",  \"value\" : {}}");
         return stringJSONBuild.toString();
     }
     public static String getFullStuffByAgeForm(String ageStart, String ageEnd){
         StringBuilder stringJSONBuild = new StringBuilder();
-        stringJSONBuild.append("{ \"messageType\" : \"form\" , \"type\" : \"fullStuffByAge\", \"ageStart\" : \"");
+        stringJSONBuild.append("{ \"messageType\" : \"form\" , \"type\" : \"fullStuffByAge\", \"value\" : { \"ageStart\" : \"");
         stringJSONBuild.append(ageStart);
         stringJSONBuild.append("\" , \"ageEnd\" : \"");
         stringJSONBuild.append(ageEnd);
-        stringJSONBuild.append("\" }");
+        stringJSONBuild.append("\" }}");
         return stringJSONBuild.toString();
     }
     public static String getFullStuffByTypeForm(String workerType){
         StringBuilder stringJSONBuild = new StringBuilder();
-        stringJSONBuild.append("{ \"messageType\" : \"form\" , \"type\" : \"fullStuffByType\", \"workerType\" :  \"");
+        stringJSONBuild.append("{ \"messageType\" : \"form\" , \"type\" : \"fullStuffByType\",  \"value\" : {\"workerType\" :  \"");
         stringJSONBuild.append(workerType);
-        stringJSONBuild.append("\" }");
+        stringJSONBuild.append("\" }}");
         return stringJSONBuild.toString();
     }
     public static String getPCByEqForm(String eqId){
         StringBuilder stringJSONBuild = new StringBuilder();
-        stringJSONBuild.append("{ \"messageType\" : \"form\" , \"type\" : \"PCByEq\", \"eqId\" :  \"");
+        stringJSONBuild.append("{ \"messageType\" : \"form\" , \"type\" : \"PCByEq\", \"value\" : { \"eqId\" :  \"");
         stringJSONBuild.append(eqId);
-        stringJSONBuild.append("\" }");
+        stringJSONBuild.append("\" }}");
         return stringJSONBuild.toString();
     }
     public static String getProjectsAtTimeForm(String timeStart, String timeEnd){
         StringBuilder stringJSONBuild = new StringBuilder();
-        stringJSONBuild.append("{ \"messageType\" : \"form\" , \"type\" : \"projectAtTime\", \"timeStart\" : \"");
+        stringJSONBuild.append("{ \"messageType\" : \"form\" , \"type\" : \"projectAtTime\", \"value\" : {\"timeStart\" : \"");
         stringJSONBuild.append(timeStart);
         stringJSONBuild.append("\" , \"timeEnd\" : \"");
         stringJSONBuild.append(timeEnd);
-        stringJSONBuild.append("\" }");
+        stringJSONBuild.append("\" }}");
         return stringJSONBuild.toString();
     }
     public static String getProjectsByContractForm(String contractId){
         StringBuilder stringJSONBuild = new StringBuilder();
-        stringJSONBuild.append("{ \"messageType\" : \"form\" , \"type\" : \"projectsByContract\", \"contractId\" :  \"");
+        stringJSONBuild.append("{ \"messageType\" : \"form\" , \"type\" : \"projectsByContract\", \"value\" : { \"contractId\" :  \"");
         stringJSONBuild.append(contractId);
-        stringJSONBuild.append("\" }");
+        stringJSONBuild.append("\" }}");
         return stringJSONBuild.toString();
     }
     public static String getProjectsCostByTimeForm(String timeStart, String timeEnd){
         StringBuilder stringJSONBuild = new StringBuilder();
-        stringJSONBuild.append("{ \"messageType\" : \"form\" , \"type\" : \"projectsCostByTime\", \"timeStart\" : \"");
+        stringJSONBuild.append("{ \"messageType\" : \"form\" , \"type\" : \"projectsCostByTime\", \"value\" : { \"timeStart\" : \"");
         stringJSONBuild.append(timeStart);
         stringJSONBuild.append("\" , \"timeEnd\" : \"");
         stringJSONBuild.append(timeEnd);
-        stringJSONBuild.append("\" }");
+        stringJSONBuild.append("\" }}");
         return stringJSONBuild.toString();
     }
     public static String getProjectsWorkersByTimeForm(String timeStart, String timeEnd){
         StringBuilder stringJSONBuild = new StringBuilder();
-        stringJSONBuild.append("{ \"messageType\" : \"form\" , \"type\" : \"projectsWorkersByTime\", \"timeStart\" : \"");
+        stringJSONBuild.append("{ \"messageType\" : \"form\" , \"type\" : \"projectsWorkersByTime\", \"value\" : { \"timeStart\" : \"");
         stringJSONBuild.append(timeStart);
         stringJSONBuild.append("\" , \"timeEnd\" : \"");
         stringJSONBuild.append(timeEnd);
-        stringJSONBuild.append("\" }");
+        stringJSONBuild.append("\" }}");
         return stringJSONBuild.toString();
     }
     public static String getWorkDoneByCompaniesForm(){
         StringBuilder stringJSONBuild = new StringBuilder();
-        stringJSONBuild.append("{ \"messageType\" : \"form\" , \"type\" : \"workDoneByCompanies\" }");
+        stringJSONBuild.append("{ \"messageType\" : \"form\" , \"type\" : \"workDoneByCompanies\", \"value\" : {} }");
         return stringJSONBuild.toString();
     }
     public static String getWorkersContractsByTimeForm(String workerId, String timeStart, String timeEnd){
         StringBuilder stringJSONBuild = new StringBuilder();
-        stringJSONBuild.append("{ \"messageType\" : \"form\" , \"type\" : \"workersContractsByTime\", \"workerId\" : \"");
+        stringJSONBuild.append("{ \"messageType\" : \"form\" , \"type\" : \"workersContractsByTime\", \"value\" : { \"workerId\" : \"");
         stringJSONBuild.append(workerId);
         stringJSONBuild.append("\" , \"timeStart\" : \"");
         stringJSONBuild.append(timeStart);
         stringJSONBuild.append("\" , \"timeEnd\" : \"");
         stringJSONBuild.append(timeEnd);
-        stringJSONBuild.append("\" }");
+        stringJSONBuild.append("\" }}");
         return stringJSONBuild.toString();
     }
     public static String getWorkersInContractForm(String contractId){
         StringBuilder stringJSONBuild = new StringBuilder();
-        stringJSONBuild.append("{ \"messageType\" : \"form\" , \"type\" : \"workersInContract\", \"contractId\" :  \"");
+        stringJSONBuild.append("{ \"messageType\" : \"form\" , \"type\" : \"workersInContract\", \"value\" : { \"contractId\" :  \"");
         stringJSONBuild.append(contractId);
-        stringJSONBuild.append("\" }");
+        stringJSONBuild.append("\" }}");
         return stringJSONBuild.toString();
     }
 }

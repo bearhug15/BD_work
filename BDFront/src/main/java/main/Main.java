@@ -2,7 +2,9 @@ package main;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -18,39 +20,39 @@ import utils.Table;
 
 public class Main extends JFrame {
     String address="127.0.0.1";
-    int port=10000;
+    int port=20000;
     InitData initData;
     JSONConnection connection;
     public static void main(String[] args){
         new Main(args);
-
     }
     public Main(String[] args){
         super("Project company database");
 
         setPreferredSize(new Dimension(1000,800));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        JSONConnection JSONConnection =null;
 
         try {
-            /*connection = new JSONConnection(main.Main.super.rootPane, address, port);
+            connection = new JSONConnection(main.Main.super.rootPane, address, port);
             String JSONInitString = connection.getInitData();
-            initData = createInitData(JSONInitString);//*/
-            initData = createInitData(initCheck());
+            if(!JSONResponseProcessor.processInitData(JSONInitString)){
+                System.out.println("Error in init");
+            }
+            //initData = createInitData(JSONInitString);//*/
+            //initData = createInitData(initCheck());
         }catch (CancelledConnectionCreation e){
             //System.exit(1);
-        }catch (ParseException e){
-            System.out.println("Parse exception");
-        } /*catch (IOException e) {
+        }catch (IOException e) {
             System.out.println("Exception at getting init");
-        }*/
+        }
+        ListableFields fields = new ListableFields();
         JMenuBar forms = new JMenuBar();
         JMenu formMenu =new JMenu("Forms");
         setForms(formMenu);
         forms.add(formMenu);
 
         JTabbedPane tables = new JTabbedPane(JTabbedPane.NORTH);
-        fillTabbedPane(tables,initData, JSONConnection);
+        fillTabbedPane(tables,initData, connection);
 
         add(forms,BorderLayout.NORTH);
         add(tables,BorderLayout.CENTER);
@@ -64,45 +66,7 @@ public class Main extends JFrame {
         //DataGetterGenerator.createGroupDataGetter(Main.super.rootPane,connection,null);
         //*/
     }
-    public void addTabsFromDB(){
 
-    }
-
-    private InitData createInitData(String initString) throws  ParseException{
-        InitData initData=null;
-        Vector<Table> tables = new Vector<>();
-        JSONObject initJSONObject = (JSONObject) (new JSONParser()).parse(initString);
-        //try {
-            JSONArray tablesArray = (JSONArray) initJSONObject.get("tables");
-            tablesArray.forEach(entry->{
-                JSONObject table = (JSONObject) entry;
-                String name = (String)table.get("name");
-                HashMap<String,String> fields = new HashMap<String,String>();
-                JSONArray fieldsArray = (JSONArray) table.get("fields");
-                fieldsArray.forEach(field->{
-                    String fieldName = (String)((JSONObject)field).get("name");
-                    String fieldType = (String)((JSONObject)field).get("type");
-                    fields.put(fieldName,fieldType);
-                });
-                tables.add(new Table(name,fields));
-                //System.out.println(name);
-            });//*/
-        Vector<FormReq> forms = new Vector<>();
-        Class generator = StringJSONMessageGenerator.class;
-        Method[] methods = generator.getDeclaredMethods();
-            JSONArray formsArray = (JSONArray) initJSONObject.get("forms");
-            formsArray.forEach(formName->{
-                String sFormName =(String)formName;
-                for (Method method:methods){
-                    if(method.getName().equals(sFormName+"Form")){
-                        forms.add(new FormReq((String)formName));
-                        break;
-                    }
-                }
-            });
-
-        return new InitData(tables,forms);
-    }
 
     private void fillTabbedPane(JTabbedPane tabbedPane, InitData initData, JSONConnection JSONConnection){
         tabbedPane.add("Companies",createTablePanel("Company",JSONConnection));
@@ -116,13 +80,16 @@ public class Main extends JFrame {
         tabbedPane.add("Department heads",createTablePanel("DepartmentHead",JSONConnection));
         tabbedPane.add("Contracts",createTablePanel("Contract",JSONConnection));
         tabbedPane.add("Projects",createTablePanel("Project",JSONConnection));
-        tabbedPane.add("Groups",createTablePanel("Group",JSONConnection));
+        //tabbedPane.add("Groups",createTablePanel("Group",JSONConnection));
         tabbedPane.add("Contracts&Projects",createTablePanel("ProjectContractBinder",JSONConnection));
+        tabbedPane.add("Groups",createTablePanel("Groups",JSONConnection));
+        tabbedPane.add("Groups bind",createTablePanel("GroupsBind",JSONConnection));
+        //tabbedPane.add("Groups bind",createTablePanel("GroupsBind",JSONConnection));
     }
     private JPanel createTablePanel(String tableName, JSONConnection JSONConnection){
         JPanel mainPanel = new JPanel();
 
-        TablePanel tablePanel = new TablePanel(tableName,JSONConnection);
+        TablePanel tablePanel = new TablePanel(tableName,JSONConnection,new Vector(Collections.singleton("first")));
         JMenuBar tableBar = new JMenuBar();
         JMenuItem refreshButton = new JMenuItem("Refresh table");
 
@@ -170,13 +137,30 @@ public class Main extends JFrame {
         return stringJSONBuild.toString();
     }
     private void setForms(JMenu menu){
-        JMenuItem contractsByTimeItem = new JMenuItem("Get contracts by time");
+        JMenuItem AVGSalaryByWorkerTypeItem = new JMenuItem("Get average salaries divided by type");
+        AVGSalaryByWorkerTypeItem.addActionListener(action->{
+            DataGetterGenerator.AVGSalaryByWorkerTypeForm(Main.super.rootPane,connection);
+        });
+        JMenuItem contractsAtTimeItem = new JMenuItem("Get contracts at time");
+        contractsAtTimeItem.addActionListener(action->{
+            DataGetterGenerator.ContractsAtTimeForm(Main.super.rootPane,connection);
+        });
+
         JMenuItem contractsByProjectItem = new JMenuItem("Get contracts by project id");
+        contractsByProjectItem.addActionListener(action->{
+            DataGetterGenerator.ContractsByProjectFrom(Main.super.rootPane,connection);
+        });
         JMenuItem contractsEfItem = new JMenuItem("Get contracts efficiency");
+        contractsEfItem.addActionListener(action->{
+            DataGetterGenerator.ContractsEfForm(Main.super.rootPane,connection);
+        });
         JMenuItem contractsCostByTimeItem = new JMenuItem("Get contracts cost by time");
+        contractsCostByTimeItem.addActionListener(action->{
+            DataGetterGenerator.ContractsCostByTimeForm(Main.super.rootPane,connection);
+        });
 
-
-        menu.add(contractsByTimeItem);
+        menu.add(AVGSalaryByWorkerTypeItem);
+        menu.add(contractsAtTimeItem);
         menu.add(contractsByProjectItem);
         menu.add(contractsEfItem);
         menu.add(contractsCostByTimeItem);
