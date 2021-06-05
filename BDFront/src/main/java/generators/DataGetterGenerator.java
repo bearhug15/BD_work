@@ -38,10 +38,11 @@ public class DataGetterGenerator {
     static boolean isGettingWorkerType = false;
     static boolean isGettingGroup = false;
     static boolean isGettingCompany = false;
-    static boolean isGettingGroupType=false;
+    static boolean isGettingGroupType = false;
+
     public static boolean createEquipmentTypeDataGetter(Component component, JSONConnection connection, Vector<Object> lastArgs) {
         isGettingEquipmentType = true;
-        boolean done=true;
+        boolean done = true;
         String lastArg;
         if (lastArgs != null) {
             lastArg = (String) lastArgs.elementAt(0);
@@ -63,8 +64,8 @@ public class DataGetterGenerator {
                 JSONString = StringJSONMessageGenerator.addTableEntryMsg("equipment_type", newArgs);
             }
             String result = connection.makeRequest(JSONString);
-            if (result!=null) {
-                if(JSONResponseProcessor.isCorrect(result)) {
+            if (result != null) {
+                if (JSONResponseProcessor.isCorrect(result)) {
                     JOptionPane.showMessageDialog(component, "Error at server", "Error", JOptionPane.ERROR_MESSAGE);
                     if (lastArgs != null) {
                         JOptionPane.showMessageDialog(component, "Equipment type change set");
@@ -73,8 +74,8 @@ public class DataGetterGenerator {
                         JOptionPane.showMessageDialog(component, "New equipment type added");
                     }
                     ListableFields.addEquipmentType(textField.getText());
-                }else{
-                    done=false;
+                } else {
+                    done = false;
                 }
             } else {
                 if (lastArgs != null) {
@@ -93,7 +94,7 @@ public class DataGetterGenerator {
 
     public static boolean createEquipmentDataGetter(Component component, JSONConnection connection, Vector<Object> lastArgs) {
         isGettingEquipment = true;
-        boolean done=true;
+        boolean done = true;
         int id;
         String lastName;
         String department_name;
@@ -116,7 +117,7 @@ public class DataGetterGenerator {
 
         Object[] buffArray = ListableFields.getEquipmentTypes().toArray();
         String[] sBuffArray = new String[buffArray.length];
-        for(int i = 0 ; i < buffArray.length ; i ++){
+        for (int i = 0; i < buffArray.length; i++) {
             try {
                 sBuffArray[i] = buffArray[i].toString();
             } catch (NullPointerException ex) {
@@ -124,7 +125,7 @@ public class DataGetterGenerator {
             }
         }
         JComboBox types = new JComboBox(sBuffArray);
-        if(lastArgs!=null) {
+        if (lastArgs != null) {
             types.setSelectedItem(lastType);
         }
         messages.add("Type:");
@@ -146,7 +147,7 @@ public class DataGetterGenerator {
 
         buffArray = ListableFields.getDepartmentNames().toArray();
         sBuffArray = new String[buffArray.length];
-        for(int i = 0 ; i < buffArray.length ; i ++){
+        for (int i = 0; i < buffArray.length; i++) {
             try {
                 sBuffArray[i] = buffArray[i].toString();
             } catch (NullPointerException ex) {
@@ -161,7 +162,7 @@ public class DataGetterGenerator {
             JButton departmentsButton = new JButton("add department");
             departmentsButton.addActionListener(action -> {
                 boolean subEntity = createDepartmentDataGetter(component, connection, null);
-                if (subEntity ) {
+                if (subEntity) {
                     departments.removeAllItems();
                     ListableFields.getEquipmentTypes().forEach(type -> {
                         departments.addItem(type);
@@ -184,13 +185,13 @@ public class DataGetterGenerator {
                 JSONString = StringJSONMessageGenerator.addTableEntryMsg("equipment", newArgs);
             }
             String result = connection.makeRequest(JSONString);
-            if(!JSONResponseProcessor.isCorrect(result)){
+            if (!JSONResponseProcessor.isCorrect(result)) {
                 JOptionPane.showMessageDialog(component, "Error at server", "Error", JOptionPane.ERROR_MESSAGE);
                 return false;
             }
             JSONObject data;
             try {
-                data =(JSONObject)(new JSONParser()).parse(result);
+                data = (JSONObject) (new JSONParser()).parse(result);
             } catch (ParseException e) {
                 JOptionPane.showMessageDialog(component, "Error at server", "Error", JOptionPane.ERROR_MESSAGE);
                 return false;
@@ -220,7 +221,7 @@ public class DataGetterGenerator {
 
     public static boolean createEquipmentGroupDataGetter(Component component, JSONConnection connection, Vector<Object> lastArgs) {
         isGettingEquipmentGroup = true;
-        boolean done=true;
+        boolean done = true;
         int eqListId = -1;
         Vector<String> eqIds = null;
         Vector<Object> messages = new Vector<>();
@@ -233,7 +234,7 @@ public class DataGetterGenerator {
             JTextField eqListField = new JTextField(String.valueOf(eqListId));
             eqListField.setEditable(false);
             messages.add(eqListField);
-            eqIds.forEach(id->{
+            eqIds.forEach(id -> {
                 listModel.addElement(id);
             });//*/
             //listModel.addAll((Collection<String>) eqIds);
@@ -248,7 +249,7 @@ public class DataGetterGenerator {
                 int l = value.length();
                 if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') {
                 } else {
-                    number.setText(value.substring(0, max(l - 1,0)));
+                    number.setText(value.substring(0, max(l - 1, 0)));
                 }
             }
         });
@@ -292,19 +293,19 @@ public class DataGetterGenerator {
             } else {
                 JSONString = StringJSONMessageGenerator.addTableEntryMsg("eq_group_list", null);
                 String newIdStringBuffer = connection.makeRequest(JSONString);
-                if(!JSONResponseProcessor.isCorrect(newIdStringBuffer)){
+                if (!JSONResponseProcessor.isCorrect(newIdStringBuffer)) {
                     JOptionPane.showMessageDialog(component, "Error at server", "Error", JOptionPane.ERROR_MESSAGE);
                     return false;
                 }
                 JSONObject data;
                 try {
-                    data =(JSONObject)(new JSONParser()).parse(JSONString);
+                    data = (JSONObject) (new JSONParser()).parse(JSONString);
                 } catch (ParseException e) {
                     JOptionPane.showMessageDialog(component, "Error at server", "Error", JOptionPane.ERROR_MESSAGE);
                     return false;
                 }
                 int id = (int) data.get("id");
-                newId=id;
+                newId = id;
                 Vector<String> buffer = new Vector<>(valuesBuffer.size());
                 String newIdString = String.valueOf(newId);
                 valuesBuffer.forEach(a -> {
@@ -314,8 +315,8 @@ public class DataGetterGenerator {
                 JSONString = StringJSONMessageGenerator.addSerialTableEntryMsg("eq_group", newArgs);
             }
             String successful = connection.makeRequest(JSONString);
-            if (successful!=null) {
-                if(JSONResponseProcessor.isCorrect(successful)) {
+            if (successful != null) {
+                if (JSONResponseProcessor.isCorrect(successful)) {
                     JOptionPane.showMessageDialog(component, "Error at server", "Error", JOptionPane.ERROR_MESSAGE);
                     if (lastArgs != null) {
                         JOptionPane.showMessageDialog(component, "Equipment group change set");
@@ -324,8 +325,8 @@ public class DataGetterGenerator {
                         eqListId = newId;
                     }
 
-                }else{
-                    done=false;
+                } else {
+                    done = false;
                 }
             } else {
                 if (lastArgs != null) {
@@ -333,10 +334,12 @@ public class DataGetterGenerator {
                 } else {
                     JOptionPane.showMessageDialog(component, "Error at creating equipment group", "Error", JOptionPane.ERROR_MESSAGE);
                 }
-                done=false;;
+                done = false;
+                ;
             }
         } else {
-            done=false;;
+            done = false;
+            ;
         }
 
         isGettingEquipmentGroup = false;
@@ -345,7 +348,7 @@ public class DataGetterGenerator {
 
     public static boolean createDepartmentDataGetter(Component component, JSONConnection connection, Vector<Object> lastArgs) {
         isGettingDepartment = true;
-        boolean done=true;
+        boolean done = true;
         String lastArg;
         if (lastArgs != null) {
             lastArg = (String) lastArgs.elementAt(0);
@@ -367,8 +370,8 @@ public class DataGetterGenerator {
                 JSONString = StringJSONMessageGenerator.addTableEntryMsg("department", newArgs);
             }
             String result = connection.makeRequest(JSONString);
-            if (result!=null) {
-                if(JSONResponseProcessor.isCorrect(result)) {
+            if (result != null) {
+                if (JSONResponseProcessor.isCorrect(result)) {
                     JOptionPane.showMessageDialog(component, "Error at server", "Error", JOptionPane.ERROR_MESSAGE);
                     if (lastArgs != null) {
                         JOptionPane.showMessageDialog(component, "Department name change set");
@@ -378,8 +381,8 @@ public class DataGetterGenerator {
                     }
 
                     ListableFields.addDepartmentName(textField.getText());
-                }else{
-                    done=false;
+                } else {
+                    done = false;
                 }
             } else {
                 if (lastArgs != null) {
@@ -387,10 +390,10 @@ public class DataGetterGenerator {
                 } else {
                     JOptionPane.showMessageDialog(component, "Error at creating department", "Error", JOptionPane.ERROR_MESSAGE);
                 }
-                done=false;
+                done = false;
             }
         } else {
-            done=false;
+            done = false;
         }
 
         isGettingDepartment = false;
@@ -398,12 +401,12 @@ public class DataGetterGenerator {
     }
 
     public static boolean createDepartmentHeadDataGetter(Component component, JSONConnection connection, Vector<Object> lastArgs) {
-        isGettingDepartmentHead=true;
-        boolean done=true;
-        String department_name ="";
-        int workerId =-1;
+        isGettingDepartmentHead = true;
+        boolean done = true;
+        String department_name = "";
+        int workerId = -1;
         Vector<Object> messages = new Vector<>();
-        if(lastArgs!=null){
+        if (lastArgs != null) {
             department_name = (String) lastArgs.elementAt(0);
             workerId = (int) lastArgs.elementAt(1);
         }
@@ -416,7 +419,7 @@ public class DataGetterGenerator {
                 int l = value.length();
                 if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') {
                 } else {
-                    workerIdField.setText(value.substring(0, max(l - 1,0)));
+                    workerIdField.setText(value.substring(0, max(l - 1, 0)));
                 }
             }
         });
@@ -429,7 +432,7 @@ public class DataGetterGenerator {
             JButton departmentsButton = new JButton("add department");
             departmentsButton.addActionListener(action -> {
                 boolean subEntity = createDepartmentDataGetter(component, connection, null);
-                if (subEntity ) {
+                if (subEntity) {
                     departments.removeAllItems();
                     ListableFields.getDepartmentNames().forEach(type -> {
                         departments.addItem(type);
@@ -447,7 +450,7 @@ public class DataGetterGenerator {
                     JOptionPane.showMessageDialog(component, "Worker id should be greater then 0", "Input error", JOptionPane.ERROR_MESSAGE);
                     return false;
                 }
-            }catch (NumberFormatException e){
+            } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(component, "Wrong worker id", "Input error", JOptionPane.ERROR_MESSAGE);
                 return false;
             }
@@ -461,13 +464,13 @@ public class DataGetterGenerator {
                 JSONString = StringJSONMessageGenerator.addTableEntryMsg("department_head", newArgs);
             }
             String result = connection.makeRequest(JSONString);
-            if(!JSONResponseProcessor.isCorrect(result)){
+            if (!JSONResponseProcessor.isCorrect(result)) {
                 JOptionPane.showMessageDialog(component, "Error at server", "Error", JOptionPane.ERROR_MESSAGE);
                 return false;
             }
             JSONObject data;
             try {
-                data =(JSONObject)(new JSONParser()).parse(result);
+                data = (JSONObject) (new JSONParser()).parse(result);
             } catch (ParseException e) {
                 JOptionPane.showMessageDialog(component, "Error at server", "Error", JOptionPane.ERROR_MESSAGE);
                 return false;
@@ -485,37 +488,39 @@ public class DataGetterGenerator {
                 } else {
                     JOptionPane.showMessageDialog(component, "Error at creating department head", "Error", JOptionPane.ERROR_MESSAGE);
                 }
-                done=false;;
+                done = false;
+                ;
             }
         } else {
-            done=false;;
+            done = false;
+            ;
         }
 
-        isGettingDepartmentHead=false;
+        isGettingDepartmentHead = false;
         return done;
 
     }
 
     public static boolean createWorkerDataGetter(Component component, JSONConnection connection, Vector<Object> lastArgs) {
-        isGettingWorker =true;
-        boolean done=true;
-        int worker_id=-1;
-        String firstname="";
-        String secondname="";
-        String familyname="";
-        int age=0;
-        long salary=0;
-        String department_name="";
-        String worker_type="";
-        if(lastArgs!=null){
-            worker_id = (Integer)lastArgs.elementAt(0);
-            firstname =(String)lastArgs.elementAt(1);
-            secondname=(String)lastArgs.elementAt(2);
-            familyname=(String)lastArgs.elementAt(3);
-            age = (Integer)lastArgs.elementAt(4);
-            salary = (Long)lastArgs.elementAt(5);
-            department_name = (String)lastArgs.elementAt(6);
-            worker_type = (String)lastArgs.elementAt(7);
+        isGettingWorker = true;
+        boolean done = true;
+        int worker_id = -1;
+        String firstname = "";
+        String secondname = "";
+        String familyname = "";
+        int age = 0;
+        long salary = 0;
+        String department_name = "";
+        String worker_type = "";
+        if (lastArgs != null) {
+            worker_id = (Integer) lastArgs.elementAt(0);
+            firstname = (String) lastArgs.elementAt(1);
+            secondname = (String) lastArgs.elementAt(2);
+            familyname = (String) lastArgs.elementAt(3);
+            age = (Integer) lastArgs.elementAt(4);
+            salary = (Long) lastArgs.elementAt(5);
+            department_name = (String) lastArgs.elementAt(6);
+            worker_type = (String) lastArgs.elementAt(7);
         }
         Vector<Object> messages = new Vector<>();
         JLabel firstnameLabel = new JLabel("firstname");
@@ -538,7 +543,7 @@ public class DataGetterGenerator {
                 int l = value.length();
                 if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') {
                 } else {
-                    ageField.setText(value.substring(0, max(l - 1,0)));
+                    ageField.setText(value.substring(0, max(l - 1, 0)));
                 }
             }
         });
@@ -553,7 +558,7 @@ public class DataGetterGenerator {
                 int l = value.length();
                 if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') {
                 } else {
-                    salaryField.setText(value.substring(0, max(l - 1,0)));
+                    salaryField.setText(value.substring(0, max(l - 1, 0)));
                 }
             }
         });
@@ -568,7 +573,7 @@ public class DataGetterGenerator {
             JButton departmentsButton = new JButton("add department");
             departmentsButton.addActionListener(action -> {
                 boolean subEntity = createDepartmentDataGetter(component, connection, null);
-                if (subEntity ) {
+                if (subEntity) {
                     departments.removeAllItems();
                     ListableFields.getDepartmentNames().forEach(type -> {
                         departments.addItem(type);
@@ -586,7 +591,7 @@ public class DataGetterGenerator {
             JButton workerTypesButton = new JButton("add worker type");
             workerTypesButton.addActionListener(action -> {
                 boolean subEntity = createWorkerTypeDataGetter(component, connection, null);
-                if (subEntity ) {
+                if (subEntity) {
                     workerTypes.removeAllItems();
                     ListableFields.getWorkerTypes().forEach(type -> {
                         workerTypes.addItem(type);
@@ -596,83 +601,83 @@ public class DataGetterGenerator {
             });
             messages.add(workerTypesButton);
         }
-        int res =JOptionPane.showOptionDialog(component,messages.toArray(),"Worker",JOptionPane.OK_CANCEL_OPTION,JOptionPane.PLAIN_MESSAGE,null,null,null);
-        if(res==JOptionPane.OK_OPTION){
+        int res = JOptionPane.showOptionDialog(component, messages.toArray(), "Worker", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+        if (res == JOptionPane.OK_OPTION) {
             String newFirstname = firstnameField.getText();
             String newSecondname = secondnameField.getText();
             String newFamilyname = familynameField.getText();
             String newAge = ageField.getText();
             String newSalary = salaryField.getText();
-            String newDepartmentName=(String)departments.getSelectedItem();
-            String newWorkerType=(String)workerTypes.getSelectedItem();
-            if(Integer.parseInt(newAge)<18){
-                JOptionPane.showMessageDialog(component,"age should be > 17","Error input",JOptionPane.ERROR_MESSAGE);
-                isGettingWorker =false;
+            String newDepartmentName = (String) departments.getSelectedItem();
+            String newWorkerType = (String) workerTypes.getSelectedItem();
+            if (Integer.parseInt(newAge) < 18) {
+                JOptionPane.showMessageDialog(component, "age should be > 17", "Error input", JOptionPane.ERROR_MESSAGE);
+                isGettingWorker = false;
                 return false;
             }
-            if(Integer.parseInt(newSalary)<1){
-                JOptionPane.showMessageDialog(component,"salary should be > 0","Error input",JOptionPane.ERROR_MESSAGE);
-                isGettingWorker =false;
+            if (Integer.parseInt(newSalary) < 1) {
+                JOptionPane.showMessageDialog(component, "salary should be > 0", "Error input", JOptionPane.ERROR_MESSAGE);
+                isGettingWorker = false;
                 return false;
             }
-            if(newDepartmentName=="" || newWorkerType==""){
-                JOptionPane.showMessageDialog(component,"Fields couldn't be empty","Error input",JOptionPane.ERROR_MESSAGE);
-                isGettingWorker =false;
+            if (newDepartmentName == "" || newWorkerType == "") {
+                JOptionPane.showMessageDialog(component, "Fields couldn't be empty", "Error input", JOptionPane.ERROR_MESSAGE);
+                isGettingWorker = false;
                 return false;
             }
             Vector<MyEntry<String, String>> newArgs = new Vector<>();
-            newArgs.add(new MyEntry<>("firstname",newFirstname));
-            newArgs.add(new MyEntry<>("secondname",newSecondname));
-            newArgs.add(new MyEntry<>("familyname",newFamilyname));
-            newArgs.add(new MyEntry<>("age",newAge));
-            newArgs.add(new MyEntry<>("salary",newSalary));
-            newArgs.add(new MyEntry<>("department_name",newDepartmentName));
-            newArgs.add(new MyEntry<>("worker_type",newWorkerType));
+            newArgs.add(new MyEntry<>("firstname", newFirstname));
+            newArgs.add(new MyEntry<>("secondname", newSecondname));
+            newArgs.add(new MyEntry<>("familyname", newFamilyname));
+            newArgs.add(new MyEntry<>("age", newAge));
+            newArgs.add(new MyEntry<>("salary", newSalary));
+            newArgs.add(new MyEntry<>("department_name", newDepartmentName));
+            newArgs.add(new MyEntry<>("worker_type", newWorkerType));
             String JSONString;
-            if(lastArgs!=null){
-                JSONString = StringJSONMessageGenerator.updateTableMsg("worker",String.valueOf(worker_id),newArgs);
-            }else{
-                JSONString =StringJSONMessageGenerator.addTableEntryMsg("worker",newArgs);
+            if (lastArgs != null) {
+                JSONString = StringJSONMessageGenerator.updateTableMsg("worker", String.valueOf(worker_id), newArgs);
+            } else {
+                JSONString = StringJSONMessageGenerator.addTableEntryMsg("worker", newArgs);
             }
             String response = connection.makeRequest(JSONString);
-            if(response!=null){
-                if(JSONResponseProcessor.isCorrect(response)) {
+            if (response != null) {
+                if (JSONResponseProcessor.isCorrect(response)) {
                     JSONObject data;
                     try {
-                        data =(JSONObject)(new JSONParser()).parse(response);
+                        data = (JSONObject) (new JSONParser()).parse(response);
                     } catch (ParseException e) {
                         JOptionPane.showMessageDialog(component, "Error at server", "Error", JOptionPane.ERROR_MESSAGE);
-                        isGettingWorker =false;
+                        isGettingWorker = false;
                         return false;
                     }
                     int id = (int) data.get("id");
                     if (lastArgs != null) {
-                        JOptionPane.showMessageDialog(component, "Worker change set. Id: " +String.valueOf(id));
+                        JOptionPane.showMessageDialog(component, "Worker change set. Id: " + String.valueOf(id));
                     } else {
                         JOptionPane.showMessageDialog(component, "New worker added.");
                     }
                 }
-            }else{
+            } else {
                 JOptionPane.showMessageDialog(component, "Error at server", "Error", JOptionPane.ERROR_MESSAGE);
-                done=false;
+                done = false;
             }
         }
-        isGettingWorker =false;
+        isGettingWorker = false;
         return done;
     }
 
     public static boolean createContractDataGetter(Component component, JSONConnection connection, Vector<Object> lastArgs) {
-        isGettingContract=true;
-        boolean done=true;
-        int lastContractId=-1;
-        int cost =0;
-        String contract_start="";
-        String contract_end="";
-        if(lastArgs!=null){
-            lastContractId =(int)lastArgs.elementAt(0);
-            cost = (int)lastArgs.elementAt(1);
-            contract_start=(String)lastArgs.elementAt(2);
-            contract_end=(String)lastArgs.elementAt(3);
+        isGettingContract = true;
+        boolean done = true;
+        int lastContractId = -1;
+        int cost = 0;
+        String contract_start = "";
+        String contract_end = "";
+        if (lastArgs != null) {
+            lastContractId = (int) lastArgs.elementAt(0);
+            cost = (int) lastArgs.elementAt(1);
+            contract_start = (String) lastArgs.elementAt(2);
+            contract_end = (String) lastArgs.elementAt(3);
         }
         JTextField costField = new JTextField(String.valueOf(cost));
         costField.addKeyListener(new KeyAdapter() {
@@ -682,43 +687,42 @@ public class DataGetterGenerator {
                 int l = value.length();
                 if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') {
                 } else {
-                    costField.setText(value.substring(0,max(l - 1,0)));
+                    costField.setText(value.substring(0, max(l - 1, 0)));
                 }
             }
         });
 
         DateTimePicker startDatePicker = new DateTimePicker();
         DateTimePicker endDatePicker = new DateTimePicker();
-        if(lastArgs!=null){
+        if (lastArgs != null) {
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MMM-dd HH:mm:ss");
             try {
                 startDatePicker.setDateTimePermissive(LocalDateTime.parse(contract_start, dtf));
                 endDatePicker.setDateTimePermissive(LocalDateTime.parse(contract_end, dtf));
-            }catch (DateTimeParseException e){
+            } catch (DateTimeParseException e) {
                 startDatePicker.setDateTimePermissive(LocalDateTime.now());
                 endDatePicker.setDateTimePermissive(LocalDateTime.now());
             }
-        }
-        else {
+        } else {
             startDatePicker.setDateTimePermissive(LocalDateTime.now());
             endDatePicker.setDateTimePermissive(LocalDateTime.now());
         }
         JLabel warningLabel = new JLabel("");
-        startDatePicker.addDateTimeChangeListener(date->{
+        startDatePicker.addDateTimeChangeListener(date -> {
             LocalDateTime startDate = startDatePicker.getDateTimePermissive();
             LocalDateTime endDate = endDatePicker.getDateTimePermissive();
-            if(startDate.isBefore(endDate)){
+            if (startDate.isBefore(endDate)) {
                 warningLabel.setText("");
-            }else{
+            } else {
                 warningLabel.setText("Start date should be before end date");
             }
         });
-        endDatePicker.addDateTimeChangeListener(date->{
+        endDatePicker.addDateTimeChangeListener(date -> {
             LocalDateTime startDate = startDatePicker.getDateTimePermissive();
             LocalDateTime endDate = endDatePicker.getDateTimePermissive();
-            if(startDate.isBefore(endDate)){
+            if (startDate.isBefore(endDate)) {
                 warningLabel.setText("");
-            }else{
+            } else {
                 warningLabel.setText("Start date should be before end date");
             }
         });
@@ -730,28 +734,28 @@ public class DataGetterGenerator {
         messages.add("Set contract end date");
         messages.add(endDatePicker);
         messages.add(warningLabel);
-        int res = JOptionPane.showOptionDialog(component,messages.toArray(),"Set contract",JOptionPane.OK_CANCEL_OPTION,JOptionPane.PLAIN_MESSAGE,null,null,null);
-        if (res==JOptionPane.OK_OPTION){
+        int res = JOptionPane.showOptionDialog(component, messages.toArray(), "Set contract", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+        if (res == JOptionPane.OK_OPTION) {
             LocalDateTime startDate = startDatePicker.getDateTimePermissive();
             LocalDateTime endDate = endDatePicker.getDateTimePermissive();
-            if(!startDate.isBefore(endDate)){
-                JOptionPane.showMessageDialog(component,"Start date should be before end date","Input error",JOptionPane.ERROR_MESSAGE);
+            if (!startDate.isBefore(endDate)) {
+                JOptionPane.showMessageDialog(component, "Start date should be before end date", "Input error", JOptionPane.ERROR_MESSAGE);
                 return false;
             }
             Vector<MyEntry<String, String>> newArgs = new Vector<>();
-            newArgs.add(new MyEntry<>("cost",costField.getText()));
-            newArgs.add(new MyEntry<>("contract_start",startDate.toString()));
-            newArgs.add(new MyEntry<>("contract_end",endDate.toString()));
+            newArgs.add(new MyEntry<>("cost", costField.getText()));
+            newArgs.add(new MyEntry<>("contract_start", startDate.toString()));
+            newArgs.add(new MyEntry<>("contract_end", endDate.toString()));
             String JSONString;
-            if(lastArgs!=null){
-                JSONString = StringJSONMessageGenerator.updateTableMsg("contract",String.valueOf(lastContractId),newArgs);
-            }else{
-                JSONString = StringJSONMessageGenerator.addTableEntryMsg("contract",newArgs);
+            if (lastArgs != null) {
+                JSONString = StringJSONMessageGenerator.updateTableMsg("contract", String.valueOf(lastContractId), newArgs);
+            } else {
+                JSONString = StringJSONMessageGenerator.addTableEntryMsg("contract", newArgs);
             }
             String result = connection.makeRequest(JSONString);
             MyEntry<Boolean, Integer> idContainer;
             try {
-                idContainer = JSONResponseProcessor.processId(result,"contract_id");
+                idContainer = JSONResponseProcessor.processId(result, "contract_id");
             } catch (ParseException e) {
                 JOptionPane.showMessageDialog(component, "Error result format", "Server error", JOptionPane.ERROR_MESSAGE);
                 isGettingContract = false;
@@ -770,24 +774,24 @@ public class DataGetterGenerator {
                 } else {
                     JOptionPane.showMessageDialog(component, "Error at creating contract", "Error", JOptionPane.ERROR_MESSAGE);
                 }
-                done=false;;
+                done = false;
+                ;
             }
+        } else {
+            done = false;
         }
-        else{
-            done=false;
-        }
-        isGettingContract=false;
+        isGettingContract = false;
         return done;
     }
 
     public static boolean createProjectDataGetter(Component component, JSONConnection connection, Vector<Object> lastArgs) {
-        isGettingProject=true;
-        boolean done=true;
-        int lastProjectId=-1;
-        int cost =0;
-        if(lastArgs!=null){
-            lastProjectId =(int)lastArgs.elementAt(0);
-            cost = (int)lastArgs.elementAt(1);
+        isGettingProject = true;
+        boolean done = true;
+        int lastProjectId = -1;
+        int cost = 0;
+        if (lastArgs != null) {
+            lastProjectId = (int) lastArgs.elementAt(0);
+            cost = (int) lastArgs.elementAt(1);
         }
         JTextField costField = new JTextField(String.valueOf(cost));
         costField.addKeyListener(new KeyAdapter() {
@@ -797,33 +801,33 @@ public class DataGetterGenerator {
                 int l = value.length();
                 if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') {
                 } else {
-                    costField.setText(value.substring(0, max(l - 1,0)));
+                    costField.setText(value.substring(0, max(l - 1, 0)));
                 }
             }
         });
 
 
         Vector<Object> messages = new Vector<>();
-        if(lastArgs!=null) {
+        if (lastArgs != null) {
             messages.add("Set project cost");
-        }else{
+        } else {
             messages.add("Set new project cost");
         }
         messages.add(costField);
-        int res = JOptionPane.showOptionDialog(component,messages.toArray(),"Set project",JOptionPane.OK_CANCEL_OPTION,JOptionPane.PLAIN_MESSAGE,null,null,null);
-        if (res==JOptionPane.OK_OPTION){
+        int res = JOptionPane.showOptionDialog(component, messages.toArray(), "Set project", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+        if (res == JOptionPane.OK_OPTION) {
             Vector<MyEntry<String, String>> newArgs = new Vector<>();
-            newArgs.add(new MyEntry<>("cost",costField.getText()));
+            newArgs.add(new MyEntry<>("cost", costField.getText()));
             String JSONString;
-            if(lastArgs!=null){
-                JSONString = StringJSONMessageGenerator.updateTableMsg("project",String.valueOf(lastProjectId),newArgs);
-            }else{
-                JSONString = StringJSONMessageGenerator.addTableEntryMsg("project",newArgs);
+            if (lastArgs != null) {
+                JSONString = StringJSONMessageGenerator.updateTableMsg("project", String.valueOf(lastProjectId), newArgs);
+            } else {
+                JSONString = StringJSONMessageGenerator.addTableEntryMsg("project", newArgs);
             }
             String result = connection.makeRequest(JSONString);
             MyEntry<Boolean, Integer> idContainer;
             try {
-                idContainer = JSONResponseProcessor.processId(result,"project_id");
+                idContainer = JSONResponseProcessor.processId(result, "project_id");
             } catch (ParseException e) {
                 JOptionPane.showMessageDialog(component, "Error result format", "Server error", JOptionPane.ERROR_MESSAGE);
                 isGettingProject = false;
@@ -841,19 +845,19 @@ public class DataGetterGenerator {
                 } else {
                     JOptionPane.showMessageDialog(component, "Error at creating contract", "Error", JOptionPane.ERROR_MESSAGE);
                 }
-                done=false;;
+                done = false;
+                ;
             }
+        } else {
+            done = false;
         }
-        else{
-            done=false;
-        }
-        isGettingProject=false;
+        isGettingProject = false;
         return done;
     }
 
     public static boolean createWorkerTypeDataGetter(Component component, JSONConnection connection, Vector<Object> lastArgs) {
         isGettingWorkerType = true;
-        boolean done=true;
+        boolean done = true;
         String lastArg;
         if (lastArgs != null) {
             lastArg = (String) lastArgs.elementAt(0);
@@ -875,8 +879,8 @@ public class DataGetterGenerator {
                 JSONString = StringJSONMessageGenerator.addTableEntryMsg("worker_types", newArgs);
             }
             String result = connection.makeRequest(JSONString);
-            if (result!=null) {
-                if(JSONResponseProcessor.isCorrect(result)) {
+            if (result != null) {
+                if (JSONResponseProcessor.isCorrect(result)) {
                     JOptionPane.showMessageDialog(component, "Error at server", "Error", JOptionPane.ERROR_MESSAGE);
                     if (lastArgs != null) {
                         JOptionPane.showMessageDialog(component, "Worker type name change set");
@@ -886,8 +890,8 @@ public class DataGetterGenerator {
                     }
 
                     ListableFields.addWorkerType(textField.getText());
-                }else{
-                    done=false;
+                } else {
+                    done = false;
                 }
             } else {
                 if (lastArgs != null) {
@@ -895,24 +899,26 @@ public class DataGetterGenerator {
                 } else {
                     JOptionPane.showMessageDialog(component, "Error at creating worker type", "Error", JOptionPane.ERROR_MESSAGE);
                 }
-                done=false;;
+                done = false;
+                ;
             }
         } else {
-            done=false;;
+            done = false;
+            ;
         }
         isGettingWorkerType = false;
         return done;
     }
 
     public static boolean createGroupsDataGetter(Component component, JSONConnection connection, Vector<Object> lastArgs) {
-        int id=-1;
-        int group_id=0;
-        int worker_id=0;
-        boolean done=true;
-        if(lastArgs!=null){
-            id=(Integer) lastArgs.elementAt(0);
-            group_id=(Integer) lastArgs.elementAt(1);
-            worker_id=(Integer) lastArgs.elementAt(2);
+        int id = -1;
+        int group_id = 0;
+        int worker_id = 0;
+        boolean done = true;
+        if (lastArgs != null) {
+            id = (Integer) lastArgs.elementAt(0);
+            group_id = (Integer) lastArgs.elementAt(1);
+            worker_id = (Integer) lastArgs.elementAt(2);
         }
         Vector<Object> message = new Vector<>();
         JTextField groupIdField = new JTextField(String.valueOf(group_id));
@@ -923,7 +929,7 @@ public class DataGetterGenerator {
                 int l = value.length();
                 if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') {
                 } else {
-                    groupIdField.setText(value.substring(0, max(l - 1,0)));
+                    groupIdField.setText(value.substring(0, max(l - 1, 0)));
                 }
             }
         });
@@ -935,7 +941,7 @@ public class DataGetterGenerator {
                 int l = value.length();
                 if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') {
                 } else {
-                    workerIdField.setText(value.substring(0, max(l - 1,0)));
+                    workerIdField.setText(value.substring(0, max(l - 1, 0)));
                 }
             }
         });
@@ -943,23 +949,23 @@ public class DataGetterGenerator {
         message.add(groupIdField);
         message.add(new JLabel("Worker id:"));
         message.add(workerIdField);
-        int res = JOptionPane.showOptionDialog(component,message.toArray(),"Groups",JOptionPane.OK_CANCEL_OPTION,JOptionPane.PLAIN_MESSAGE,null,null,null);
-        if(res == JOptionPane.OK_OPTION){
+        int res = JOptionPane.showOptionDialog(component, message.toArray(), "Groups", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+        if (res == JOptionPane.OK_OPTION) {
             Vector<MyEntry<String, String>> newArgs = new Vector<>();
-            if(Integer.parseInt(groupIdField.getText())<1||Integer.parseInt(workerIdField.getText())<1){
-                JOptionPane.showMessageDialog(component,"Ids should be >0","Error input",JOptionPane.ERROR_MESSAGE);
+            if (Integer.parseInt(groupIdField.getText()) < 1 || Integer.parseInt(workerIdField.getText()) < 1) {
+                JOptionPane.showMessageDialog(component, "Ids should be >0", "Error input", JOptionPane.ERROR_MESSAGE);
                 return false;
             }
-            newArgs.add(new MyEntry<>("group_id",groupIdField.getText()));
-            newArgs.add(new MyEntry<>("worker_id",workerIdField.getText()));
+            newArgs.add(new MyEntry<>("group_id", groupIdField.getText()));
+            newArgs.add(new MyEntry<>("worker_id", workerIdField.getText()));
             String JSONString;
-            if(lastArgs!=null){
-                JSONString = StringJSONMessageGenerator.updateTableMsg("groups",String.valueOf(id),newArgs);
-            }else{
-                JSONString = StringJSONMessageGenerator.addTableEntryMsg("groups",newArgs);
+            if (lastArgs != null) {
+                JSONString = StringJSONMessageGenerator.updateTableMsg("groups", String.valueOf(id), newArgs);
+            } else {
+                JSONString = StringJSONMessageGenerator.addTableEntryMsg("groups", newArgs);
             }
             String response = connection.makeRequest(JSONString);
-            if(JSONResponseProcessor.isCorrect(response)){
+            if (JSONResponseProcessor.isCorrect(response)) {
                 JSONObject data;
                 try {
                     data = (JSONObject) (new JSONParser()).parse(response);
@@ -967,34 +973,34 @@ public class DataGetterGenerator {
                     JOptionPane.showMessageDialog(component, "Error", "Error", JOptionPane.ERROR_MESSAGE);
                     return false;
                 }
-                int ID = (int)data.get("id");
+                int ID = (int) data.get("id");
                 if (lastArgs != null) {
                     JOptionPane.showMessageDialog(component, "Groups change set");
                 } else {
                     JOptionPane.showMessageDialog(component, "New groups added. Id: " + String.valueOf(ID));
                 }
 
-            }else {
+            } else {
                 JOptionPane.showMessageDialog(component, "Error", "Error", JOptionPane.ERROR_MESSAGE);
                 return false;
             }
-        }else{
-            done=false;
+        } else {
+            done = false;
         }
 
         return done;
     }
 
-    public static boolean createGroupsBindDataGetter(Component component, JSONConnection connection, Vector<Object> lastArgs){
-        boolean done=true;
-        int group_id=-1;
-        long cost=0;
-        String group_type="";
+    public static boolean createGroupsBindDataGetter(Component component, JSONConnection connection, Vector<Object> lastArgs) {
+        boolean done = true;
+        int group_id = -1;
+        long cost = 0;
+        String group_type = "";
         Vector<Object> messages = new Vector<>();
-        if(lastArgs!=null){
-            group_id = (Integer)lastArgs.elementAt(0);
-            cost = (Long)lastArgs.elementAt(1);
-            group_type = (String)lastArgs.elementAt(2);
+        if (lastArgs != null) {
+            group_id = (Integer) lastArgs.elementAt(0);
+            cost = (Long) lastArgs.elementAt(1);
+            group_type = (String) lastArgs.elementAt(2);
         }
         JTextField costField = new JTextField(String.valueOf(cost));
         costField.addKeyListener(new KeyAdapter() {
@@ -1004,11 +1010,11 @@ public class DataGetterGenerator {
                 int l = value.length();
                 if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') {
                 } else {
-                    costField.setText(value.substring(0, max(l-1 ,0)));
+                    costField.setText(value.substring(0, max(l - 1, 0)));
                 }
             }
         });
-        messages.add(new JLabel("Cost:" ));
+        messages.add(new JLabel("Cost:"));
         messages.add(costField);
         JComboBox groupType = new JComboBox(ListableFields.getGroupTypes().toArray());
         groupType.setSelectedItem(group_type);
@@ -1028,23 +1034,23 @@ public class DataGetterGenerator {
             });
             messages.add(groupTypesButton);
         }
-        int res = JOptionPane.showOptionDialog(component,messages.toArray(),"Groups bind",JOptionPane.OK_CANCEL_OPTION,JOptionPane.PLAIN_MESSAGE,null,null,null);
-        if(res == JOptionPane.OK_OPTION){
+        int res = JOptionPane.showOptionDialog(component, messages.toArray(), "Groups bind", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+        if (res == JOptionPane.OK_OPTION) {
             Vector<MyEntry<String, String>> newArgs = new Vector<>();
-            if(Integer.parseInt(costField.getText())<1){
-                JOptionPane.showMessageDialog(component,"Cost should be >0","Error input",JOptionPane.ERROR_MESSAGE);
+            if (Integer.parseInt(costField.getText()) < 1) {
+                JOptionPane.showMessageDialog(component, "Cost should be >0", "Error input", JOptionPane.ERROR_MESSAGE);
                 return false;
             }
-            newArgs.add(new MyEntry<>("cost",costField.getText()));
-            newArgs.add(new MyEntry<>("group_type",(String)groupType.getSelectedItem()));
+            newArgs.add(new MyEntry<>("cost", costField.getText()));
+            newArgs.add(new MyEntry<>("group_type", (String) groupType.getSelectedItem()));
             String JSONString;
-            if(lastArgs!=null){
-                JSONString = StringJSONMessageGenerator.updateTableMsg("groups_bind",String.valueOf(group_id),newArgs);
-            }else{
-                JSONString = StringJSONMessageGenerator.addTableEntryMsg("groups_bind",newArgs);
+            if (lastArgs != null) {
+                JSONString = StringJSONMessageGenerator.updateTableMsg("groups_bind", String.valueOf(group_id), newArgs);
+            } else {
+                JSONString = StringJSONMessageGenerator.addTableEntryMsg("groups_bind", newArgs);
             }
             String response = connection.makeRequest(JSONString);
-            if(JSONResponseProcessor.isCorrect(response)){
+            if (JSONResponseProcessor.isCorrect(response)) {
                 JSONObject data;
                 try {
                     data = (JSONObject) (new JSONParser()).parse(response);
@@ -1052,26 +1058,26 @@ public class DataGetterGenerator {
                     JOptionPane.showMessageDialog(component, "Error", "Error", JOptionPane.ERROR_MESSAGE);
                     return false;
                 }
-                long ID = (long)data.get("id");
+                long ID = (long) data.get("id");
                 if (lastArgs != null) {
                     JOptionPane.showMessageDialog(component, "Groups bind change set");
                 } else {
                     JOptionPane.showMessageDialog(component, "New groups bind added. Id: " + String.valueOf(ID));
                 }
 
-            }else {
+            } else {
                 JOptionPane.showMessageDialog(component, "Error", "Error", JOptionPane.ERROR_MESSAGE);
                 return false;
             }
-        }else{
-            done=false;
+        } else {
+            done = false;
         }
         return done;
     }
 
-    public static boolean createGroupTypeDataGetter(Component component, JSONConnection connection, Vector<Object> lastArgs){
+    public static boolean createGroupTypeDataGetter(Component component, JSONConnection connection, Vector<Object> lastArgs) {
         isGettingGroupType = true;
-        boolean done=true;
+        boolean done = true;
         String lastArg;
         if (lastArgs != null) {
             lastArg = (String) lastArgs.elementAt(0);
@@ -1093,8 +1099,8 @@ public class DataGetterGenerator {
                 JSONString = StringJSONMessageGenerator.addTableEntryMsg("group_type", newArgs);
             }
             String result = connection.makeRequest(JSONString);
-            if (result!=null) {
-                if(JSONResponseProcessor.isCorrect(result)) {
+            if (result != null) {
+                if (JSONResponseProcessor.isCorrect(result)) {
                     JOptionPane.showMessageDialog(component, "Error at server", "Error", JOptionPane.ERROR_MESSAGE);
                     if (lastArgs != null) {
                         JOptionPane.showMessageDialog(component, "Group type name change set");
@@ -1103,8 +1109,8 @@ public class DataGetterGenerator {
                         JOptionPane.showMessageDialog(component, "New group type added");
                     }
                     ListableFields.addGroupType(textField.getText());
-                }else{
-                    done=false;
+                } else {
+                    done = false;
                 }
             } else {
                 if (lastArgs != null) {
@@ -1112,26 +1118,28 @@ public class DataGetterGenerator {
                 } else {
                     JOptionPane.showMessageDialog(component, "Error at creating group type", "Error", JOptionPane.ERROR_MESSAGE);
                 }
-                done=false;;
+                done = false;
+                ;
             }
         } else {
-            done=false;;
+            done = false;
+            ;
         }
         isGettingGroupType = false;
         return done;
     }
 
-    public static boolean createProjectContractBinderDataGetter(Component component, JSONConnection connection, Vector<Object> lastArgs){
-        boolean done=true;
-        int contract_id=-1;
-        int project_id=-1;
-        int group_id=-1;
-        int head_id=-1;
-        int eq_list_id=-1;
-        String contract_start="";
-        String contract_end="";
-        if(lastArgs!=null){
-            JOptionPane.showMessageDialog(component,"This table couldn't be edited","Error",JOptionPane.ERROR_MESSAGE);
+    public static boolean createProjectContractBinderDataGetter(Component component, JSONConnection connection, Vector<Object> lastArgs) {
+        boolean done = true;
+        int contract_id = -1;
+        int project_id = -1;
+        int group_id = -1;
+        int head_id = -1;
+        int eq_list_id = -1;
+        String contract_start = "";
+        String contract_end = "";
+        if (lastArgs != null) {
+            JOptionPane.showMessageDialog(component, "This table couldn't be edited", "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
         JTextField contractIdField = new JTextField(String.valueOf(contract_id));
@@ -1142,7 +1150,7 @@ public class DataGetterGenerator {
                 int l = value.length();
                 if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') {
                 } else {
-                    contractIdField.setText(value.substring(0,max(l - 1,0)));
+                    contractIdField.setText(value.substring(0, max(l - 1, 0)));
                 }
             }
         });
@@ -1154,7 +1162,7 @@ public class DataGetterGenerator {
                 int l = value.length();
                 if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') {
                 } else {
-                    projectIdField.setText(value.substring(0,max(l - 1,0)));
+                    projectIdField.setText(value.substring(0, max(l - 1, 0)));
                 }
             }
         });
@@ -1166,7 +1174,7 @@ public class DataGetterGenerator {
                 int l = value.length();
                 if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') {
                 } else {
-                    groupIdField.setText(value.substring(0,max(l - 1,0)));
+                    groupIdField.setText(value.substring(0, max(l - 1, 0)));
                 }
             }
         });
@@ -1179,7 +1187,7 @@ public class DataGetterGenerator {
                 int l = value.length();
                 if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') {
                 } else {
-                    headIdField.setText(value.substring(0,max(l - 1,0)));
+                    headIdField.setText(value.substring(0, max(l - 1, 0)));
                 }
             }
         });
@@ -1191,43 +1199,42 @@ public class DataGetterGenerator {
                 int l = value.length();
                 if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') {
                 } else {
-                    eqListIdField.setText(value.substring(0,max(l - 1,0)));
+                    eqListIdField.setText(value.substring(0, max(l - 1, 0)));
                 }
             }
         });
 
         DateTimePicker startDatePicker = new DateTimePicker();
         DateTimePicker endDatePicker = new DateTimePicker();
-        if(lastArgs!=null){
+        if (lastArgs != null) {
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MMM-dd HH:mm:ss");
             try {
                 startDatePicker.setDateTimePermissive(LocalDateTime.parse(contract_start, dtf));
                 endDatePicker.setDateTimePermissive(LocalDateTime.parse(contract_end, dtf));
-            }catch (DateTimeParseException e){
+            } catch (DateTimeParseException e) {
                 startDatePicker.setDateTimePermissive(LocalDateTime.now());
                 endDatePicker.setDateTimePermissive(LocalDateTime.now());
             }
-        }
-        else {
+        } else {
             startDatePicker.setDateTimePermissive(LocalDateTime.now());
             endDatePicker.setDateTimePermissive(LocalDateTime.now());
         }
         JLabel warningLabel = new JLabel("");
-        startDatePicker.addDateTimeChangeListener(date->{
+        startDatePicker.addDateTimeChangeListener(date -> {
             LocalDateTime startDate = startDatePicker.getDateTimePermissive();
             LocalDateTime endDate = endDatePicker.getDateTimePermissive();
-            if(startDate.isBefore(endDate)){
+            if (startDate.isBefore(endDate)) {
                 warningLabel.setText("");
-            }else{
+            } else {
                 warningLabel.setText("Start date should be before end date");
             }
         });
-        endDatePicker.addDateTimeChangeListener(date->{
+        endDatePicker.addDateTimeChangeListener(date -> {
             LocalDateTime startDate = startDatePicker.getDateTimePermissive();
             LocalDateTime endDate = endDatePicker.getDateTimePermissive();
-            if(startDate.isBefore(endDate)){
+            if (startDate.isBefore(endDate)) {
                 warningLabel.setText("");
-            }else{
+            } else {
                 warningLabel.setText("Start date should be before end date");
             }
         });
@@ -1249,11 +1256,11 @@ public class DataGetterGenerator {
         messages.add(eqListIdField);
 
         int res = JOptionPane.showOptionDialog(component, messages.toArray(), "Project Contract bind", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-        if(res==JOptionPane.OK_OPTION){
+        if (res == JOptionPane.OK_OPTION) {
             LocalDateTime startDate = startDatePicker.getDateTimePermissive();
             LocalDateTime endDate = endDatePicker.getDateTimePermissive();
-            if(!startDate.isBefore(endDate)){
-                JOptionPane.showMessageDialog(component,"Start date should be before end date","Input error",JOptionPane.ERROR_MESSAGE);
+            if (!startDate.isBefore(endDate)) {
+                JOptionPane.showMessageDialog(component, "Start date should be before end date", "Input error", JOptionPane.ERROR_MESSAGE);
                 return false;
             }
             try {
@@ -1262,24 +1269,24 @@ public class DataGetterGenerator {
                         || Integer.parseInt(groupIdField.getText()) < 1
                         || Integer.parseInt(headIdField.getText()) < 1
                         || Integer.parseInt(eqListIdField.getText()) < 1) {
-                    JOptionPane.showMessageDialog(component,"Ids should be >0","Error",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(component, "Ids should be >0", "Error", JOptionPane.ERROR_MESSAGE);
                     return false;
                 }
-            }catch(NumberFormatException e){
-                JOptionPane.showMessageDialog(component,"Number format error","Error",JOptionPane.ERROR_MESSAGE);
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(component, "Number format error", "Error", JOptionPane.ERROR_MESSAGE);
                 return false;
             }
             Vector<MyEntry<String, String>> newArgs = new Vector<>();
-            newArgs.add(new MyEntry<>("contract_id",contractIdField.getText()));
-            newArgs.add(new MyEntry<>("project_id",projectIdField.getText()));
-            newArgs.add(new MyEntry<>("group_id",groupIdField.getText()));
-            newArgs.add(new MyEntry<>("head_id",headIdField.getText()));
-            newArgs.add(new MyEntry<>("eq_list_id",eqListIdField.getText()));
-            newArgs.add(new MyEntry<>("contract_start",startDate.toString()));
-            newArgs.add(new MyEntry<>("contract_end",endDate.toString()));
-            String JSONString = StringJSONMessageGenerator.addTableEntryMsg("pc_bind",newArgs);
+            newArgs.add(new MyEntry<>("contract_id", contractIdField.getText()));
+            newArgs.add(new MyEntry<>("project_id", projectIdField.getText()));
+            newArgs.add(new MyEntry<>("group_id", groupIdField.getText()));
+            newArgs.add(new MyEntry<>("head_id", headIdField.getText()));
+            newArgs.add(new MyEntry<>("eq_list_id", eqListIdField.getText()));
+            newArgs.add(new MyEntry<>("contract_start", startDate.toString()));
+            newArgs.add(new MyEntry<>("contract_end", endDate.toString()));
+            String JSONString = StringJSONMessageGenerator.addTableEntryMsg("pc_bind", newArgs);
             String response = connection.makeRequest(JSONString);
-            if(JSONResponseProcessor.isCorrect(response)){
+            if (JSONResponseProcessor.isCorrect(response)) {
                 JSONObject data;
                 try {
                     data = (JSONObject) (new JSONParser()).parse(response);
@@ -1287,22 +1294,22 @@ public class DataGetterGenerator {
                     JOptionPane.showMessageDialog(component, "Error", "Error", JOptionPane.ERROR_MESSAGE);
                     return false;
                 }
-                long ID = (long)data.get("id");
+                long ID = (long) data.get("id");
                 JOptionPane.showMessageDialog(component, "New contract project bind added");
 
-            }else{
-                JOptionPane.showMessageDialog(component,"Error","Error",JOptionPane.ERROR_MESSAGE);
-                done=false;
+            } else {
+                JOptionPane.showMessageDialog(component, "Error", "Error", JOptionPane.ERROR_MESSAGE);
+                done = false;
             }
-        }else{
-            done=false;
+        } else {
+            done = false;
         }
         return done;
     }
 
     public static boolean createCompanyDataGetter(Component component, JSONConnection connection, Vector<Object> lastArgs) {
         isGettingCompany = true;
-        boolean done=true;
+        boolean done = true;
         String lastArg;
         if (lastArgs != null) {
             lastArg = (String) lastArgs.elementAt(0);
@@ -1324,8 +1331,8 @@ public class DataGetterGenerator {
                 JSONString = StringJSONMessageGenerator.addTableEntryMsg("company", newArgs);
             }
             String result = connection.makeRequest(JSONString);
-            if (result!=null) {
-                if(JSONResponseProcessor.isCorrect(result)) {
+            if (result != null) {
+                if (JSONResponseProcessor.isCorrect(result)) {
                     if (lastArgs != null) {
                         JOptionPane.showMessageDialog(component, "Company name change set");
                         ListableFields.removeCompany(lastArg);
@@ -1334,9 +1341,9 @@ public class DataGetterGenerator {
                     }
 
                     ListableFields.addCompany(textField.getText());
-                }else{
+                } else {
                     JOptionPane.showMessageDialog(component, "Error", "Error", JOptionPane.ERROR_MESSAGE);
-                    done=false;
+                    done = false;
                 }
             } else {
                 if (lastArgs != null) {
@@ -1344,47 +1351,50 @@ public class DataGetterGenerator {
                 } else {
                     JOptionPane.showMessageDialog(component, "Error at creating company", "Error", JOptionPane.ERROR_MESSAGE);
                 }
-                done=false;;
+                done = false;
+                ;
             }
         } else {
-            done=false;;
+            done = false;
+            ;
         }
         isGettingCompany = false;
         return done;
     }
+
     //todo forms
-    public static String AVGSalaryByWorkerTypeForm(Component component, JSONConnection connection){
+    public static String AVGSalaryByWorkerTypeForm(Component component, JSONConnection connection) {
         String JSONString = StringJSONMessageGenerator.getAVGSalaryByWorkerTypeForm();
         String response = connection.makeRequest(JSONString);
-        if(JSONResponseProcessor.isCorrect(response)){
+        if (JSONResponseProcessor.isCorrect(response)) {
             return response;
-        }else{
+        } else {
             JOptionPane.showMessageDialog(component, "Error", "Error", JOptionPane.ERROR_MESSAGE);
             return null;
         }
     }
 
-    public static String ContractsAtTimeForm(Component component, JSONConnection connection){
+    public static String ContractsAtTimeForm(Component component, JSONConnection connection) {
         DateTimePicker startDatePicker = new DateTimePicker();
         DateTimePicker endDatePicker = new DateTimePicker();
         startDatePicker.setDateTimePermissive(LocalDateTime.now());
         endDatePicker.setDateTimePermissive(LocalDateTime.now());
         JLabel warningLabel = new JLabel("");
-        startDatePicker.addDateTimeChangeListener(date->{
+        startDatePicker.addDateTimeChangeListener(date -> {
             LocalDateTime startDate = startDatePicker.getDateTimeStrict();
             LocalDateTime endDate = endDatePicker.getDateTimeStrict();
-            if(startDate.isBefore(endDate)){
+            if (startDate.isBefore(endDate)) {
                 warningLabel.setText("");
-            }else{
+            } else {
                 warningLabel.setText("Start date should be before end date");
             }
         });
-        endDatePicker.addDateTimeChangeListener(date->{
+        endDatePicker.addDateTimeChangeListener(date -> {
             LocalDateTime startDate = startDatePicker.getDateTimeStrict();
             LocalDateTime endDate = endDatePicker.getDateTimeStrict();
-            if(startDate.isBefore(endDate)){
+            if (startDate.isBefore(endDate)) {
                 warningLabel.setText("");
-            }else{
+            } else {
                 warningLabel.setText("Start date should be before end date");
             }
         });
@@ -1394,19 +1404,19 @@ public class DataGetterGenerator {
         messages.add("Set contract end date");
         messages.add(endDatePicker);
         messages.add(warningLabel);
-        int res = JOptionPane.showOptionDialog(component,messages.toArray(),"Get contracts",JOptionPane.OK_CANCEL_OPTION,JOptionPane.PLAIN_MESSAGE,null,null,null);
-        if(res == JOptionPane.OK_OPTION){
+        int res = JOptionPane.showOptionDialog(component, messages.toArray(), "Get contracts", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+        if (res == JOptionPane.OK_OPTION) {
             LocalDateTime startDate = startDatePicker.getDateTimePermissive();
             LocalDateTime endDate = endDatePicker.getDateTimePermissive();
-            if(!startDate.isBefore(endDate)){
-                JOptionPane.showMessageDialog(component,"Start date should be before end date","Input error",JOptionPane.ERROR_MESSAGE);
+            if (!startDate.isBefore(endDate)) {
+                JOptionPane.showMessageDialog(component, "Start date should be before end date", "Input error", JOptionPane.ERROR_MESSAGE);
                 return null;
             }
-            String JSONString = StringJSONMessageGenerator.getContractsAtTimeForm(startDate.toString(),endDate.toString());
+            String JSONString = StringJSONMessageGenerator.getContractsAtTimeForm(startDate.toString(), endDate.toString());
             String response = connection.makeRequest(JSONString);
-            if(JSONResponseProcessor.isCorrect(response)){
+            if (JSONResponseProcessor.isCorrect(response)) {
                 return response;
-            }else{
+            } else {
                 JOptionPane.showMessageDialog(component, "Error", "Error", JOptionPane.ERROR_MESSAGE);
                 return null;
             }
@@ -1414,7 +1424,7 @@ public class DataGetterGenerator {
         return null;
     }
 
-    public static String ContractsByProjectFrom(Component component, JSONConnection connection){
+    public static String ContractsByProjectFrom(Component component, JSONConnection connection) {
         JTextField projectIdField = new JTextField(String.valueOf(0));
         projectIdField.addKeyListener(new KeyAdapter() {
             @Override
@@ -1423,7 +1433,7 @@ public class DataGetterGenerator {
                 int l = value.length();
                 if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') {
                 } else {
-                    projectIdField.setText(value.substring(0,max(l - 1,0)));
+                    projectIdField.setText(value.substring(0, max(l - 1, 0)));
                 }
             }
         });
@@ -1431,50 +1441,50 @@ public class DataGetterGenerator {
         messages.add(new Label("Enter project id"));
         messages.add(projectIdField);
         int res = JOptionPane.showOptionDialog(component, messages.toArray(), "Get contracts", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-        if(res==JOptionPane.OK_OPTION){
+        if (res == JOptionPane.OK_OPTION) {
             try {
                 if (Integer.parseInt(projectIdField.getText()) < 1) {
                     JOptionPane.showMessageDialog(component, "ID should be > 0", "Input error", JOptionPane.ERROR_MESSAGE);
                     return null;
                 }
-            }catch(NumberFormatException e){
+            } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(component, "Wrong number format", "Input error", JOptionPane.ERROR_MESSAGE);
                 return null;
             }
             String JSONString = StringJSONMessageGenerator.getContractsByProjectForm(projectIdField.getText());
             String response = connection.makeRequest(JSONString);
-            if(JSONResponseProcessor.isCorrect(response)){
+            if (JSONResponseProcessor.isCorrect(response)) {
                 return response;
-            }else{
+            } else {
                 JOptionPane.showMessageDialog(component, "Error", "Error", JOptionPane.ERROR_MESSAGE);
                 return null;
             }
-        }else{
+        } else {
             return null;
         }
     }
 
-    public static String ContractsCostByTimeForm(Component component, JSONConnection connection){
+    public static String ContractsCostByTimeForm(Component component, JSONConnection connection) {
         DateTimePicker startDatePicker = new DateTimePicker();
         DateTimePicker endDatePicker = new DateTimePicker();
         startDatePicker.setDateTimePermissive(LocalDateTime.now());
         endDatePicker.setDateTimePermissive(LocalDateTime.now());
         JLabel warningLabel = new JLabel("");
-        startDatePicker.addDateTimeChangeListener(date->{
+        startDatePicker.addDateTimeChangeListener(date -> {
             LocalDateTime startDate = startDatePicker.getDateTimeStrict();
             LocalDateTime endDate = endDatePicker.getDateTimeStrict();
-            if(startDate.isBefore(endDate)){
+            if (startDate.isBefore(endDate)) {
                 warningLabel.setText("");
-            }else{
+            } else {
                 warningLabel.setText("Start date should be before end date");
             }
         });
-        endDatePicker.addDateTimeChangeListener(date->{
+        endDatePicker.addDateTimeChangeListener(date -> {
             LocalDateTime startDate = startDatePicker.getDateTimeStrict();
             LocalDateTime endDate = endDatePicker.getDateTimeStrict();
-            if(startDate.isBefore(endDate)){
+            if (startDate.isBefore(endDate)) {
                 warningLabel.setText("");
-            }else{
+            } else {
                 warningLabel.setText("Start date should be before end date");
             }
         });
@@ -1484,34 +1494,250 @@ public class DataGetterGenerator {
         messages.add("Set contract end date");
         messages.add(endDatePicker);
         messages.add(warningLabel);
-        int res = JOptionPane.showOptionDialog(component,messages.toArray(),"Get contract cost",JOptionPane.OK_CANCEL_OPTION,JOptionPane.PLAIN_MESSAGE,null,null,null);
-        if(res == JOptionPane.OK_OPTION){
+        int res = JOptionPane.showOptionDialog(component, messages.toArray(), "Get contract cost", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+        if (res == JOptionPane.OK_OPTION) {
             LocalDateTime startDate = startDatePicker.getDateTimePermissive();
             LocalDateTime endDate = endDatePicker.getDateTimePermissive();
-            if(!startDate.isBefore(endDate)){
-                JOptionPane.showMessageDialog(component,"Start date should be before end date","Input error",JOptionPane.ERROR_MESSAGE);
+            if (!startDate.isBefore(endDate)) {
+                JOptionPane.showMessageDialog(component, "Start date should be before end date", "Input error", JOptionPane.ERROR_MESSAGE);
                 return null;
             }
-            String JSONString = StringJSONMessageGenerator.getContractsAtTimeForm(startDate.toString(),endDate.toString());
+            String JSONString = StringJSONMessageGenerator.getContractsAtTimeForm(startDate.toString(), endDate.toString());
             String response = connection.makeRequest(JSONString);
-            if(JSONResponseProcessor.isCorrect(response)){
+            if (JSONResponseProcessor.isCorrect(response)) {
                 return response;
-            }else{
+            } else {
                 JOptionPane.showMessageDialog(component, "Error", "Error", JOptionPane.ERROR_MESSAGE);
                 return null;
             }
         }
         return null;
     }
-    public static String ContractsEfForm(Component component, JSONConnection connection){
+
+    public static String ContractsEfForm(Component component, JSONConnection connection) {
         String JSONString = StringJSONMessageGenerator.getContractsEfForm();
         String response = connection.makeRequest(JSONString);
-        if(JSONResponseProcessor.isCorrect(response)){
+        if (JSONResponseProcessor.isCorrect(response)) {
             return response;
-        }else{
+        } else {
             JOptionPane.showMessageDialog(component, "Error", "Error", JOptionPane.ERROR_MESSAGE);
             return null;
         }
     }
-    
+
+    public static String DepartmentHeadsForm(Component component, JSONConnection connection) {
+        String JSONString = StringJSONMessageGenerator.getDepartmentHeadsForm();
+        String response = connection.makeRequest(JSONString);
+        if (JSONResponseProcessor.isCorrect(response)) {
+            return response;
+        } else {
+            JOptionPane.showMessageDialog(component, "Error", "Error", JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
+    }
+
+    public static String DepartmentStuffByAgeForm(Component component, JSONConnection connection) {
+        Vector<Object> messages = new Vector<>();
+        JComboBox departments = new JComboBox(ListableFields.getDepartmentNames().toArray());
+        messages.add("Department");
+        messages.add(departments);
+        if (!isGettingDepartment) {
+            JButton departmentsButton = new JButton("add department");
+            departmentsButton.addActionListener(action -> {
+                boolean subEntity = createDepartmentDataGetter(component, connection, null);
+                if (subEntity) {
+                    departments.removeAllItems();
+                    ListableFields.getDepartmentNames().forEach(type -> {
+                        departments.addItem(type);
+                    });
+                    departments.repaint();
+                }
+            });
+            messages.add(departmentsButton);
+        }
+        JTextField startAgeField = new JTextField(String.valueOf(0));
+        startAgeField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent ke) {
+                String value = startAgeField.getText();
+                int l = value.length();
+                if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') {
+                } else {
+                    startAgeField.setText(value.substring(0, max(l - 1, 0)));
+                }
+            }
+        });
+        JLabel ageLabel = new JLabel("Age start");
+        messages.add(ageLabel);
+        messages.add(startAgeField);
+        JTextField endAgeField = new JTextField(String.valueOf(0));
+        endAgeField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent ke) {
+                String value = endAgeField.getText();
+                int l = value.length();
+                if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') {
+                } else {
+                    endAgeField.setText(value.substring(0, max(l - 1, 0)));
+                }
+            }
+        });
+        JLabel endAgeLabel = new JLabel("Age end");
+        messages.add(endAgeLabel);
+        messages.add(endAgeField);
+        int res = JOptionPane.showOptionDialog(component, messages.toArray(), "Get department stuff", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+        if (res == JOptionPane.OK_OPTION) {
+            try {
+                if (Integer.parseInt(startAgeField.getText()) >= Integer.parseInt(endAgeField.getText())) {
+                    JOptionPane.showMessageDialog(component, "Start age should be before end age", "Input error", JOptionPane.ERROR_MESSAGE);
+                    return null;
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(component, "Start date should be before end date", "Input error", JOptionPane.ERROR_MESSAGE);
+                return null;
+            }
+            String JSONString = StringJSONMessageGenerator.getDepartmentStuffByAgeForm(departments.getSelectedItem().toString(), startAgeField.getText(), endAgeField.getText());
+            String response = connection.makeRequest(JSONString);
+            if (JSONResponseProcessor.isCorrect(response)) {
+                return response;
+            } else {
+                JOptionPane.showMessageDialog(component, "Error", "Error", JOptionPane.ERROR_MESSAGE);
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
+    public static String DepartmentStuffByTypeForm(Component component, JSONConnection connection) {
+        Vector<Object> messages = new Vector<>();
+        JComboBox departments = new JComboBox(ListableFields.getDepartmentNames().toArray());
+        messages.add("Department");
+        messages.add(departments);
+        if (!isGettingDepartment) {
+            JButton departmentsButton = new JButton("add department");
+            departmentsButton.addActionListener(action -> {
+                boolean subEntity = createDepartmentDataGetter(component, connection, null);
+                if (subEntity) {
+                    departments.removeAllItems();
+                    ListableFields.getDepartmentNames().forEach(type -> {
+                        departments.addItem(type);
+                    });
+                    departments.repaint();
+                }
+            });
+            messages.add(departmentsButton);
+        }
+        JComboBox workerTypes = new JComboBox(ListableFields.getWorkerTypes().toArray());
+        messages.add("Worker types");
+        messages.add(workerTypes);
+        if (!isGettingDepartment) {
+            JButton departmentsButton = new JButton("add worker type");
+            departmentsButton.addActionListener(action -> {
+                boolean subEntity = createWorkerTypeDataGetter(component, connection, null);
+                if (subEntity) {
+                    workerTypes.removeAllItems();
+                    ListableFields.getWorkerTypes().forEach(type -> {
+                        workerTypes.addItem(type);
+                    });
+                    workerTypes.repaint();
+                }
+            });
+            messages.add(departmentsButton);
+        }
+        int res = JOptionPane.showOptionDialog(component, messages.toArray(), "Get department stuff", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+        if (res == JOptionPane.OK_OPTION) {
+            String JSONString = StringJSONMessageGenerator.getDepartmentStuffByTypeForm(departments.getSelectedItem().toString(), workerTypes.getSelectedItem().toString());
+            String response = connection.makeRequest(JSONString);
+            if (JSONResponseProcessor.isCorrect(response)) {
+                return response;
+            } else {
+                JOptionPane.showMessageDialog(component, "Error", "Error", JOptionPane.ERROR_MESSAGE);
+                return null;
+            }
+
+        } else {
+            return null;
+        }
+    }
+
+    public static String EquipmentByContractForm(Component component, JSONConnection connection){
+        JTextField contractIdField = new JTextField(String.valueOf(0));
+        contractIdField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent ke) {
+                String value = contractIdField.getText();
+                int l = value.length();
+                if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') {
+                } else {
+                    contractIdField.setText(value.substring(0, max(l - 1, 0)));
+                }
+            }
+        });
+        Vector<Object> messages = new Vector<>();
+        messages.add(new Label("Enter contract id"));
+        messages.add(contractIdField);
+        int res = JOptionPane.showOptionDialog(component, messages.toArray(), "Get equipment", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+        if (res == JOptionPane.OK_OPTION) {
+            try {
+                if (Integer.parseInt(contractIdField.getText()) < 1) {
+                    JOptionPane.showMessageDialog(component, "ID should be > 0", "Input error", JOptionPane.ERROR_MESSAGE);
+                    return null;
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(component, "Wrong number format", "Input error", JOptionPane.ERROR_MESSAGE);
+                return null;
+            }
+            String JSONString = StringJSONMessageGenerator.getEquipmentByContractForm(contractIdField.getText());
+            String response = connection.makeRequest(JSONString);
+            if (JSONResponseProcessor.isCorrect(response)) {
+                return response;
+            } else {
+                JOptionPane.showMessageDialog(component, "Error", "Error", JOptionPane.ERROR_MESSAGE);
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
+    public static String EquipmentByProjectForm(Component component, JSONConnection connection){
+        JTextField contractIdField = new JTextField(String.valueOf(0));
+        contractIdField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent ke) {
+                String value = contractIdField.getText();
+                int l = value.length();
+                if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9') {
+                } else {
+                    contractIdField.setText(value.substring(0, max(l - 1, 0)));
+                }
+            }
+        });
+        Vector<Object> messages = new Vector<>();
+        messages.add(new Label("Enter project id"));
+        messages.add(contractIdField);
+        int res = JOptionPane.showOptionDialog(component, messages.toArray(), "Get equipment", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+        if (res == JOptionPane.OK_OPTION) {
+            try {
+                if (Integer.parseInt(contractIdField.getText()) < 1) {
+                    JOptionPane.showMessageDialog(component, "ID should be > 0", "Input error", JOptionPane.ERROR_MESSAGE);
+                    return null;
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(component, "Wrong number format", "Input error", JOptionPane.ERROR_MESSAGE);
+                return null;
+            }
+            String JSONString = StringJSONMessageGenerator.getEquipmentByProjectForm(contractIdField.getText());
+            String response = connection.makeRequest(JSONString);
+            if (JSONResponseProcessor.isCorrect(response)) {
+                return response;
+            } else {
+                JOptionPane.showMessageDialog(component, "Error", "Error", JOptionPane.ERROR_MESSAGE);
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
 }
